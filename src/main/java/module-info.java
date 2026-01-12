@@ -11,4 +11,6 @@ module com.amalitech.bloggingplatform {
 
     opens com.amalitech.bloggingplatform to javafx.fxml;
     exports com.amalitech.bloggingplatform;
+    exports com.amalitech.bloggingplatform.controller;
+    opens com.amalitech.bloggingplatform.controller to javafx.fxml;
 }
