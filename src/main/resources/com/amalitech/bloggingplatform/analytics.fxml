@@ -1,14 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.amalitech.bloggingplatform.controller.AnalyticsController"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+<VBox spacing="20" style="-fx-padding: 20; -fx-background-color: #f3f3f8;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="com.amalitech.bloggingplatform.controller.AnalyticsController">
+   <children>
+      <Label text="Performance Analytics &amp; Optimization Report" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+      
+      <ScrollPane fitToWidth="true" style="-fx-background-color: white; -fx-padding: 10;">
+         <content>
+            <VBox spacing="15" style="-fx-padding: 15;">
+               <children>
+                  <Label text="Query Performance Metrics" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                  
+                  <VBox spacing="10">
+                     <Label text="1. Post Retrieval Performance" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+                     <Label fx:id="postRetrievalLabel" wrapText="true" />
+                  </VBox>
+                  
+                  <VBox spacing="10">
+                     <Label text="2. Search Performance" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+                     <Label fx:id="searchPerformanceLabel" wrapText="true" />
+                  </VBox>
+                  
+                  <VBox spacing="10">
+                     <Label text="3. Cache Performance" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+                     <Label fx:id="cachePerformanceLabel" wrapText="true" />
+                  </VBox>
+                  
+                  <VBox spacing="10">
+                     <Label text="4. Sorting Performance" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+                     <Label fx:id="sortingPerformanceLabel" wrapText="true" />
+                  </VBox>
+                  
+                  <Separator />
+                  
+                  <Label text="Database Indexes" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                  <Label fx:id="indexesLabel" wrapText="true" />
+                  
+                  <Separator />
+                  
+                  <Label text="Optimization Summary" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                  <Label fx:id="optimizationSummaryLabel" wrapText="true" />
+                  
+                  <Separator />
+                  
+                  <Label text="Cache Statistics" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                  <Label fx:id="cacheStatsLabel" wrapText="true" />
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+      
+      <HBox alignment="CENTER_RIGHT" spacing="10">
+         <Button text="Refresh Metrics" onAction="#refreshMetrics" style="-fx-background-color: #6366f1; -fx-text-fill: white; -fx-padding: 10 20;" />
+         <Button text="Close" onAction="#onCloseClick" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-padding: 10 20;" />
+      </HBox>
+   </children>
+</VBox>

@@ -1,14 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.amalitech.bloggingplatform.controller.LoginController"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+<StackPane prefHeight="374.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amalitech.bloggingplatform.controller.LoginController">
+   <children>
+      <ImageView fitHeight="422.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@auth-bg.jpg" />
+         </image>
+      </ImageView>
+      <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: rgba(0, 0, 0, 0.8);" />
+      <VBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" spacing="15" styleClass="login-container">
+      
+          <Label styleClass="login-title" text="Login" textAlignment="CENTER" textFill="WHITE">
+            <font>
+               <Font size="20.0" />
+            </font>
+         </Label>
+      
+          <TextField fx:id="emailField" promptText="Email" styleClass="input-field" />
+      
+          <PasswordField fx:id="passwordField" promptText="Password" styleClass="input-field" />
+      
+          <Label fx:id="messageLabel" styleClass="message-label" textFill="RED" visible="false">
+            <font>
+               <Font size="20.0" />
+            </font>
+         </Label>
+      
+          <Button onAction="#onLoginButtonClick" prefHeight="30.0" prefWidth="246.0" styleClass="login-button" text="Login" textAlignment="CENTER">
+            <font>
+               <Font size="14.0" />
+            </font>
+         </Button>
+      
+          <Hyperlink fx:id="registerLink" onAction="#onRegisterButtonClick" styleClass="link-label" text="No account? Register" />
+         <padding>
+            <Insets left="70.0" right="70.0" />
+         </padding>
+      
+      </VBox>
+   </children>
+</StackPane>
