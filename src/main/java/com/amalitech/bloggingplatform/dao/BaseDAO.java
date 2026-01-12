@@ -15,3 +15,4 @@ public interface BaseDAO<T> {
 
     boolean deleteById(String id);
 }
+
