@@ -5,6 +5,8 @@ module com.amalitech.bloggingplatform {
     requires org.mongodb.driver.sync.client;
     requires org.slf4j;
     requires org.mongodb.driver.core;
+    requires jbcrypt;
+    requires org.mongodb.bson;
 
 
     opens com.amalitech.bloggingplatform to javafx.fxml;
