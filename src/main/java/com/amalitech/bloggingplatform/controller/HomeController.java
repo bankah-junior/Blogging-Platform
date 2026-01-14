@@ -205,9 +205,10 @@ public class HomeController {
             Stage stage = new Stage();
             stage.setTitle("Performance Analytics");
             stage.setScene(new Scene(root));
-            stage.setResizable(true);
-            stage.setMinWidth(800);
-            stage.setMinHeight(600);
+            stage.setResizable(false);
+            stage.setWidth(800);
+            stage.setHeight(600);
+            stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
