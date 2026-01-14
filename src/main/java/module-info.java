@@ -7,6 +7,7 @@ module com.amalitech.bloggingplatform {
     requires org.mongodb.driver.core;
     requires jbcrypt;
     requires org.mongodb.bson;
+    requires javafx.graphics;
 
 
     opens com.amalitech.bloggingplatform to javafx.fxml;

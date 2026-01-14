@@ -38,7 +38,9 @@ public class LoginController {
                     homeController.setCurrentUser(user);
                     stage.setTitle("Home Screen");
                     stage.setScene(scene);
-                    //stage.setResizable(false);
+                    stage.setMinWidth(800);
+                    stage.setMinHeight(600);
+                    stage.centerOnScreen();
                     stage.show();
                 } catch (IOException e) {
                     messageLabel.setText("OPPS!!! Navigation broken. Try again.");
@@ -64,6 +66,7 @@ public class LoginController {
         stage.setTitle("Register");
         stage.setScene(scene);
         stage.setResizable(false);
+        stage.centerOnScreen();
         stage.show();
     }
 }

@@ -3,15 +3,19 @@ package com.amalitech.bloggingplatform.controller;
 import com.amalitech.bloggingplatform.Launcher;
 import com.amalitech.bloggingplatform.model.Comment;
 import com.amalitech.bloggingplatform.model.Post;
+import com.amalitech.bloggingplatform.model.Review;
 import com.amalitech.bloggingplatform.model.User;
 import com.amalitech.bloggingplatform.service.impl.CommentServiceImpl;
 import com.amalitech.bloggingplatform.service.impl.PostServiceImpl;
+import com.amalitech.bloggingplatform.service.impl.ReviewServiceImpl;
 import com.amalitech.bloggingplatform.utils.exceptions.UserInputsException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -20,6 +24,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 public class BlogItemController {
 
@@ -33,12 +38,18 @@ public class BlogItemController {
     @FXML private Label timeLabel;
     @FXML private Label commentsLabel;
     @FXML private TextField commentTextField;
+    @FXML private VBox reviewsContainer;
+    @FXML private ChoiceBox<Integer> ratingChoiceBox;
+    @FXML private TextArea reviewTextArea;
+    @FXML private Button submitReviewButton;
 
     private Post post;
     private String currentUserId;
     private Runnable refreshCallback;
     private PostServiceImpl postService;
     private CommentServiceImpl commentService;
+    private ReviewController reviewController;
+    private ReviewServiceImpl reviewService;
 
     public void setData(Post post, String currentUserId, Runnable refreshCallback) {
         this.post = post;
@@ -46,6 +57,8 @@ public class BlogItemController {
         this.refreshCallback = refreshCallback;
         this.postService = new PostServiceImpl();
         this.commentService = new CommentServiceImpl();
+        this.reviewController = new ReviewController();
+        this.reviewService = new ReviewServiceImpl();
 
         try {
             UserController userController = new UserController();
@@ -54,17 +67,15 @@ public class BlogItemController {
             authorLabel.setText("By " + author.getUsername());
             contentLabel.setText(post.getContent());
 
-            // Format time
             if (post.getCreatedAt() != null) {
                 LocalDateTime dateTime = LocalDateTime.ofInstant(
-                    Instant.ofEpochMilli(post.getCreatedAt()),
-                    ZoneId.systemDefault()
+                        Instant.ofEpochMilli(post.getCreatedAt()),
+                        ZoneId.systemDefault()
                 );
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy 'at' HH:mm");
                 timeLabel.setText(dateTime.format(formatter));
             }
 
-            // Load comment count
             try {
                 List<Comment> comments = commentService.getByPost(post.getId());
                 commentsLabel.setText(String.valueOf(comments.size()));
@@ -73,15 +84,15 @@ public class BlogItemController {
                 System.err.println("Error loading comments: " + e.getMessage());
             }
 
-            // Wire up buttons
             setupButtons();
+            loadReviews();
+            initializeReviewForm();
         } catch (UserInputsException e) {
             System.err.println("Error loading blog item: " + e.getMessage());
         }
     }
 
     private void setupButtons() {
-        // Only show edit/delete if user is the author
         boolean isAuthor = post.getAuthorId().equals(currentUserId);
         editPostButton.setVisible(isAuthor);
         deletePostButton.setVisible(isAuthor);
@@ -99,7 +110,6 @@ public class BlogItemController {
             PostEditorController controller = loader.getController();
             controller.setCurrentPost(post);
             controller.setCurrentUser(currentUserId, null);
-            // Set a simple refresh callback
             if (refreshCallback != null) {
                 controller.setRefreshCallback(refreshCallback);
             }
@@ -109,8 +119,7 @@ public class BlogItemController {
             stage.setScene(new Scene(root));
             stage.setResizable(false);
             stage.showAndWait();
-            
-            // Always refresh after closing the editor
+
             if (refreshCallback != null) {
                 refreshCallback.run();
             }
@@ -159,10 +168,8 @@ public class BlogItemController {
             Comment created = commentService.create(comment);
             if (created != null && created.getId() != null) {
                 commentTextField.clear();
-                // Refresh comment count
                 List<Comment> comments = commentService.getByPost(post.getId());
                 commentsLabel.setText(String.valueOf(comments.size()));
-                // Refresh the parent view if callback is available
                 if (refreshCallback != null) {
                     refreshCallback.run();
                 }
@@ -176,12 +183,11 @@ public class BlogItemController {
     }
 
     private void onShareClick() {
-        // Simple share functionality - copy to clipboard
         String shareText = "Check out this post: " + post.getTitle() + "\n" + post.getContent();
         javafx.scene.input.Clipboard.getSystemClipboard().setContent(
-            new javafx.scene.input.ClipboardContent() {{
-                putString(shareText);
-            }}
+                new javafx.scene.input.ClipboardContent() {{
+                    putString(shareText);
+                }}
         );
         showAlert("Success", "Post content copied to clipboard!");
     }
@@ -192,6 +198,93 @@ public class BlogItemController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void initializeReviewForm() {
+        ratingChoiceBox.getItems().addAll(1, 2, 3, 4, 5);
+        ratingChoiceBox.setValue(5);
+
+        if (hasUserReviewed()) {
+            disableReviewForm();
+        } else {
+            submitReviewButton.setOnAction(e -> onSubmitReviewClick());
+        }
+    }
+
+    private void loadReviews() {
+        clearReviews();
+        List<Review> reviews = reviewService.getByPost(post.getId());
+        for (Review review : reviews) {
+            reviewsContainer.getChildren().add(createReviewNode(review));
+        }
+    }
+
+    private Node createReviewNode(Review review) {
+        VBox reviewNode = new VBox(5);
+        reviewNode.setStyle("-fx-padding: 8; -fx-background-color: #f1f5f9; -fx-background-radius: 8;");
+
+        Label authorLabel = new Label();
+        try {
+            User author = new UserController().getById(review.getUserId());
+            authorLabel.setText(author.getUsername() + " rated: " + review.getRating() + "/5");
+        } catch (UserInputsException e) {
+            authorLabel.setText("Unknown user rated: " + review.getRating() + "/5");
+        }
+
+        authorLabel.setStyle("-fx-font-weight: bold;");
+        Label feedbackLabel = new Label(review.getFeedback());
+        feedbackLabel.setWrapText(true);
+        reviewNode.getChildren().addAll(authorLabel, feedbackLabel);
+        return reviewNode;
+    }
+
+    private void onSubmitReviewClick() {
+        if (hasUserReviewed()) {
+            showAlert("Info", "You have already reviewed this post.");
+            return;
+        }
+
+        Integer rating = ratingChoiceBox.getValue();
+        String feedback = reviewTextArea.getText().trim();
+
+        if (rating == null || feedback.isEmpty()) {
+            showAlert("Error", "Please provide a rating and feedback.");
+            return;
+        }
+
+        Review review = new Review();
+        review.setPostId(post.getId());
+        review.setUserId(currentUserId);
+        review.setRating(rating);
+        review.setFeedback(feedback);
+
+        Review createdReview = reviewController.createReview(review);
+        if (createdReview != null) {
+            showAlert("Success", "Your review has been submitted.");
+            loadReviews();
+            disableReviewForm();
+            if (refreshCallback != null) {
+                refreshCallback.run();
+            }
+        } else {
+            showAlert("Error", "Failed to submit your review.");
+        }
+    }
+
+    private void clearReviews() {
+        reviewsContainer.getChildren().clear();
+    }
+
+    private boolean hasUserReviewed() {
+        List<Review> reviews = reviewService.getByPost(post.getId());
+        return reviews.stream().anyMatch(r -> Objects.equals(r.getUserId(), currentUserId));
+    }
+
+    private void disableReviewForm() {
+        reviewTextArea.setDisable(true);
+        ratingChoiceBox.setDisable(true);
+        submitReviewButton.setDisable(true);
+        reviewTextArea.setPromptText("You have already reviewed this post.");
     }
 }
 
