@@ -98,5 +98,10 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
+
+    @Override
+    public User getByUsername(String username) {
+        return userDAO.findByUsername(username).orElse(null);
+    }
 }
 
