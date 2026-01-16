@@ -6,7 +6,7 @@ import com.amalitech.bloggingplatform.utils.exceptions.UserInputsException;
 
 import java.util.List;
 
-import static com.amalitech.bloggingplatform.utils.RegexValidatorUtils.*;
+import static com.amalitech.bloggingplatform.utils.ValidationUtils.*;
 
 public class UserController {
     private final UserServiceImpl userServiceImpl;
@@ -26,7 +26,7 @@ public class UserController {
         if (email == null || password == null) {
             throw new UserInputsException("Email and password cannot be null.");
         }
-        if (!isValidEmail(email)) {
+        if (!isEmailValid(email)) {
             throw new UserInputsException("Invalid email format.");
         }
         User user = userServiceImpl.login(email, password);
@@ -47,15 +47,15 @@ public class UserController {
         if (user.getEmail() == null || user.getPasswordHash() == null || user.getUsername() == null) {
             throw new UserInputsException("Email, password hash, and username cannot be null.");
         }
-        if (!isValidEmail(user.getEmail())) {
+        if (!isEmailValid(user.getEmail())) {
             throw new UserInputsException("Invalid email format.");
         }
-        if (!isValidPassword(user.getPasswordHash())) {
+        if (!isPasswordValid(user.getPasswordHash())) {
             throw new UserInputsException("Password must be at least 8 characters long, " +
                     "contain at least one uppercase and lowercase letter, " +
                     "one digit, and one special character");
         }
-        if (!isValidUsername(user.getUsername())) {
+        if (!isUsernameValid(user.getUsername())) {
             throw new UserInputsException("Username must be 3-60 characters long and can contain letters, numbers, dots, underscores, and hyphens.");
         }
         User newUser = userServiceImpl.create(user);
@@ -125,7 +125,7 @@ public class UserController {
      * @return The user model or null if the email is invalid.
      */
     public User getByEmail(String email) {
-        if (!isValidEmail(email)) {
+        if (!isEmailValid(email)) {
             throw new UserInputsException("Invalid email format.");
         }
         User user = userServiceImpl.getByEmail(email);
