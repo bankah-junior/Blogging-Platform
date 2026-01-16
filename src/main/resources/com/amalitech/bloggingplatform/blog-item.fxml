@@ -44,6 +44,9 @@
                   -fx-font-size: 15px;
                   -fx-line-spacing: 4px;
                   -fx-padding: 10 0;" />
+                  
+    <!-- ================= TAGS ================= -->
+    <HBox fx:id="tagsContainer" spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 5 0;" />
 
     <!-- ================= STATS & ACTIONS ================= -->
     <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 10 0; -fx-background-color: #f8fafc; -fx-background-radius: 8; -fx-padding: 12;">
@@ -92,23 +95,25 @@
                             style="-fx-background-color: #6366f1; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 10 20; -fx-cursor: hand; -fx-font-size: 14px; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, rgba(99,102,241,0.3), 5, 0, 0, 2);" />
                 </children>
             </HBox>
-        </children>
-    </VBox>
-    <!-- ================= REVIEW SECTION ================= -->
-    <VBox spacing="10" style="-fx-padding: 10 0;">
-        <Label text="Reviews"
-               style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" />
-        <VBox fx:id="reviewsContainer" spacing="10" />
-        <Separator />
-        <Label text="Add a review"
-               style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #64748b;" />
-        <HBox spacing="10" alignment="CENTER_LEFT">
-            <Label text="Rating:" />
-            <ChoiceBox fx:id="ratingChoiceBox" />
-        </HBox>
-        <TextArea fx:id="reviewTextArea" promptText="Write your review here..."
-                  style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e2e8f0; -fx-padding: 10; -fx-font-size: 14px;" />
-        <Button text="Submit Review" fx:id="submitReviewButton"
-                style="-fx-background-color: #6366f1; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 10 20; -fx-cursor: hand; -fx-font-size: 14px; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, rgba(99,102,241,0.3), 5, 0, 0, 2);" />
-    </VBox>
+                </children>
+            </VBox>
+            <Separator fx:id="commentSeparator" style="-fx-padding: 10 0 0 0;" visible="false"/>
+            <VBox fx:id="commentsContainer" spacing="10" style="-fx-padding: 10 0 0 0;" />
+            <!-- ================= REVIEW SECTION ================= -->
+            <VBox spacing="10" style="-fx-padding: 10 0;">
+                <Label text="Reviews"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" />
+                <VBox fx:id="reviewsContainer" spacing="10" />
+                <Separator />
+                <Label text="Add a review"
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #64748b;" />
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Rating:" />
+                    <ChoiceBox fx:id="ratingChoiceBox" />
+                </HBox>
+                <TextArea fx:id="reviewTextArea" promptText="Write your review here..."
+                          style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e2e8f0; -fx-padding: 10; -fx-font-size: 14px;" />
+                <Button text="Submit Review" fx:id="submitReviewButton"
+                        style="-fx-background-color: #6366f1; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 10 20; -fx-cursor: hand; -fx-font-size: 14px; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, rgba(99,102,241,0.3), 5, 0, 0, 2);" />
+            </VBox>
 </VBox>

@@ -40,10 +40,15 @@ public class PostEditorController {
     private HomeController homeController;
     private Runnable refreshCallback;
     private PostServiceImpl postService;
+    private TagServiceImpl tagService;
 
     @FXML
     public void initialize() {
         postService = new PostServiceImpl();
+        MongoClient client = MongoDBConnection.connect();
+        MongoDatabase db = client.getDatabase("java-demo");
+        TagDAOImpl tagDAO = new TagDAOImpl(db);
+        tagService = new TagServiceImpl(tagDAO);
     }
 
     public void setCurrentUser(String userId, String username) {
@@ -57,19 +62,16 @@ public class PostEditorController {
             titleField.setText(post.getTitle());
             contentArea.setText(post.getContent());
             publishedCheckBox.setSelected(post.isPublished());
-            
+
             // Load existing tags
             try {
-                MongoClient client = MongoDBConnection.connect();
-                MongoDatabase db = client.getDatabase("java-demo");
-                TagDAOImpl tagDAO = new TagDAOImpl(db);
-                TagServiceImpl tagService = new TagServiceImpl(tagDAO);
                 List<Tag> tags = tagService.getTagsByPost(post.getId());
-                String tagNames = String.join(", ", tags.stream()
-                    .map(Tag::getName)
-                    .toArray(String[]::new));
-                tagsField.setText(tagNames);
-                client.close();
+                if (tags != null && !tags.isEmpty()) {
+                    String tagNames = String.join(", ", tags.stream()
+                        .map(Tag::getName)
+                        .toArray(String[]::new));
+                    tagsField.setText(tagNames);
+                }
             } catch (Exception e) {
                 System.err.println("Error loading tags: " + e.getMessage());
             }
@@ -113,38 +115,31 @@ public class PostEditorController {
             }
 
             if (post != null) {
-                // Handle tags - create TagService with fresh connection
-                MongoClient client = MongoDBConnection.connect();
-                try {
-                    MongoDatabase db = client.getDatabase("java-demo");
-                    TagDAOImpl tagDAO = new TagDAOImpl(db);
-                    TagServiceImpl tagService = new TagServiceImpl(tagDAO);
-                    
-                    String tagsInput = tagsField.getText().trim();
-                    if (!tagsInput.isEmpty()) {
-                        String[] tagNames = tagsInput.split(",");
-                        for (String tagName : tagNames) {
-                            tagName = tagName.trim();
-                            if (!tagName.isEmpty()) {
-                                Tag tag = tagService.getByName(tagName);
-                                if (tag == null) {
-                                    tag = new Tag();
-                                    tag.setName(tagName);
-                                    tag = tagService.create(tag);
-                                }
-                                if (tag != null && tag.getId() != null) {
-                                    try {
-                                        tagService.assignTagToPost(post.getId(), tag.getId());
-                                    } catch (Exception e) {
-                                        // Tag might already be assigned, continue
-                                        System.err.println("Tag assignment note: " + e.getMessage());
-                                    }
+                // Handle tags
+                tagService.unassignAllTagsFromPost(post.getId()); // Clear old tags
+
+                String tagsInput = tagsField.getText().trim();
+                if (!tagsInput.isEmpty()) {
+                    String[] tagNames = tagsInput.split(",");
+                    for (String tagName : tagNames) {
+                        tagName = tagName.trim();
+                        if (!tagName.isEmpty()) {
+                            Tag tag = tagService.getByName(tagName);
+                            if (tag == null) {
+                                tag = new Tag();
+                                tag.setName(tagName);
+                                tag = tagService.create(tag);
+                            }
+                            if (tag != null && tag.getId() != null) {
+                                try {
+                                    tagService.assignTagToPost(post.getId(), tag.getId());
+                                } catch (Exception e) {
+                                    // Tag might already be assigned, continue
+                                    System.err.println("Tag assignment note: " + e.getMessage());
                                 }
                             }
                         }
                     }
-                } finally {
-                    client.close();
                 }
 
                 showAlert("Success", currentPost == null ? "Post created successfully!" : "Post updated successfully!");

@@ -57,6 +57,11 @@ public class TagDAOImpl implements TagDAO {
     }
 
     @Override
+    public void unassignAllTagsFromPost(String postId) {
+        postTagsCollection.deleteMany(eq("postId", postId));
+    }
+
+    @Override
     public Tag save(Tag entity) {
 
         Document doc = new Document("name", entity.getName());

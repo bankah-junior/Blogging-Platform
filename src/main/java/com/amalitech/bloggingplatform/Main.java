@@ -33,10 +33,12 @@ public class Main {
             Tag forexTag = new Tag(null, "Forex");
             Tag tradingTag = new Tag(null, "Trading");
             Tag strategyTag = new Tag(null, "Strategy");
+            Tag fundamentalsTag = new Tag(null, "Fundamentals");
 
             tagDAO.save(forexTag);
             tagDAO.save(tradingTag);
             tagDAO.save(strategyTag);
+            tagDAO.save(fundamentalsTag);
 
             // Create Forex posts
             Post post1 = new Post(
@@ -59,8 +61,30 @@ public class Main {
                     null
             );
 
+            Post post3 = new Post(
+                    null,
+                    forexUser.getId(),
+                    "Before the Charts, Learn the Game: Why Trading Fundamentals Are Non-Negotiable",
+                    "Indicators, bots, and strategies won’t save you if you don’t understand the basics. Here’s why every trader must master the fundamentals first.",
+                    true,
+                    null,
+                    null
+            );
+
             postDAO.save(post1);
             postDAO.save(post2);
+            postDAO.save(post3);
+
+            // Assign tags to posts
+            tagDAO.assignTagToPost(post1.getPostId(), forexTag.getId());
+            tagDAO.assignTagToPost(post1.getPostId(), tradingTag.getId());
+            tagDAO.assignTagToPost(post2.getPostId(), forexTag.getId());
+            tagDAO.assignTagToPost(post2.getPostId(), tradingTag.getId());
+            tagDAO.assignTagToPost(post2.getPostId(), strategyTag.getId());
+            tagDAO.assignTagToPost(post3.getPostId(), forexTag.getId());
+            tagDAO.assignTagToPost(post3.getPostId(), tradingTag.getId());
+            tagDAO.assignTagToPost(post3.getPostId(), strategyTag.getId());
+            tagDAO.assignTagToPost(post3.getPostId(), fundamentalsTag.getId());
 
             // Update a Forex post
             post1.setContent("Learn the basics of Forex markets, currency pairs, leverage, and trading sessions.");
