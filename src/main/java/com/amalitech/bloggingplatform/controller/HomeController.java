@@ -3,7 +3,9 @@ package com.amalitech.bloggingplatform.controller;
 import com.amalitech.bloggingplatform.Launcher;
 import com.amalitech.bloggingplatform.model.Post;
 import com.amalitech.bloggingplatform.model.User;
+import com.amalitech.bloggingplatform.service.UserService;
 import com.amalitech.bloggingplatform.service.impl.PostServiceImpl;
+import com.amalitech.bloggingplatform.service.impl.UserServiceImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -35,6 +37,12 @@ public class HomeController {
     private Button analyticsButton;
 
     @FXML
+    private Button profileButton;
+    
+    @FXML
+    private Button logoutButton; // New logout button
+
+    @FXML
     private Button clearFiltersButton;
 
     @FXML
@@ -44,6 +52,8 @@ public class HomeController {
     private ComboBox<String> sortOrderComboBox;
 
     private PostServiceImpl postService;
+    private UserServiceImpl userService; // Add UserService instance
+    private User currentUser;
     private String currentUserId;
     private String currentUsername;
     private List<Post> allPosts;
@@ -51,6 +61,7 @@ public class HomeController {
     @FXML
     public void initialize() {
         postService = new PostServiceImpl();
+        userService = new UserServiceImpl(); // Initialize UserService
         allPosts = postService.getAll();
         loadPosts(allPosts);
 
@@ -101,15 +112,11 @@ public class HomeController {
     public void setUsername(String username) {
         this.username.setText(username);
         this.currentUsername = username;
-        // Get user ID from username
-        UserController userController = new UserController();
+        // Get user ID from username using the service
         try {
-            List<User> users = userController.getAll();
-            for (User user : users) {
-                if (user.getUsername().equals(username)) {
-                    this.currentUserId = user.getId();
-                    break;
-                }
+            this.currentUser = userService.getByUsername(username);
+            if (this.currentUser != null) {
+                this.currentUserId = this.currentUser.getId();
             }
         } catch (Exception e) {
             System.err.println("Error getting user ID: " + e.getMessage());
@@ -117,6 +124,7 @@ public class HomeController {
     }
 
     public void setCurrentUser(User user) {
+        this.currentUser = user;
         this.currentUserId = user.getId();
         this.currentUsername = user.getUsername();
         this.username.setText(user.getUsername());
@@ -184,7 +192,59 @@ public class HomeController {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
-            showAlert("Error", "Failed to open post editor: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to open post editor: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void onProfileClick() {
+        if (currentUser == null) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Could not load user profile. Please try logging in again.");
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(Launcher.class.getResource("profile-settings.fxml"));
+            Parent root = loader.load();
+
+            ProfileSettingsController controller = loader.getController();
+            controller.setUser(currentUser);
+
+            Stage stage = (Stage) profileButton.getScene().getWindow(); // Get current stage
+            Stage profileStage = new Stage();
+            profileStage.setTitle("Profile Settings");
+            profileStage.setScene(new Scene(root));
+            profileStage.setResizable(false);
+            profileStage.showAndWait();
+
+            // Refresh user info in case it changed
+            if (this.currentUser != null) {
+                this.currentUser = userService.getById(this.currentUser.getId());
+                if (this.currentUser != null) {
+                    setUsername(this.currentUser.getUsername());
+                    this.currentUserId = this.currentUser.getId();
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to open profile settings.");
+        }
+    }
+    
+    // New Logout method
+    @FXML
+    public void onLogoutClick() {
+        try {
+            Stage stage = (Stage) logoutButton.getScene().getWindow(); // Get current stage
+            FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("login.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            stage.setTitle("Login");
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load login screen.");
         }
     }
 
@@ -193,7 +253,7 @@ public class HomeController {
         try {
             FXMLLoader loader = new FXMLLoader(Launcher.class.getResource("analytics.fxml"));
             if (loader.getLocation() == null) {
-                showAlert("Error", "Failed to find analytics.fxml resource file.");
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to find analytics.fxml resource file.");
                 return;
             }
             Parent root = loader.load();
@@ -212,10 +272,10 @@ public class HomeController {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert("Error", "Failed to open analytics: " + e.getMessage() + "\n\nCause: " + (e.getCause() != null ? e.getCause().getMessage() : "Unknown"));
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to open analytics: " + e.getMessage() + "\n\nCause: " + (e.getCause() != null ? e.getCause().getMessage() : "Unknown"));
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Error", "Failed to open analytics: " + e.getMessage() + "\n\nCause: " + (e.getCause() != null ? e.getCause().getMessage() : "Unknown"));
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to open analytics: " + e.getMessage() + "\n\nCause: " + (e.getCause() != null ? e.getCause().getMessage() : "Unknown"));
         }
     }
 
@@ -228,8 +288,8 @@ public class HomeController {
         blogListView.refresh();
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
