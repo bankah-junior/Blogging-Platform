@@ -34,8 +34,26 @@ public class TagServiceImpl implements TagService {
         tagDao.assignTagToPost(postId, tagId);
     }
 
-    @Override
-    public List<Tag> getTagsByPost(String postId) {
-        return tagDao.findTagsByPostId(postId);
+    
+
+        @Override
+
+        public List<Tag> getTagsByPost(String postId) {
+
+            return tagDao.findTagsByPostId(postId);
+
+        }
+
+    
+
+        @Override
+
+        public void unassignAllTagsFromPost(String postId) {
+
+            tagDao.unassignAllTagsFromPost(postId);
+
+        }
+
     }
-}
+
+    

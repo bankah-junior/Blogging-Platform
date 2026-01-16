@@ -1,10 +1,11 @@
 package com.amalitech.bloggingplatform.controller;
 
 import com.amalitech.bloggingplatform.Launcher;
+import com.amalitech.bloggingplatform.utils.ValidationUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
+import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -19,18 +20,26 @@ public class LoginController {
     private PasswordField passwordField;
 
     @FXML
-    private Label messageLabel;
-
-    @FXML
     protected void onLoginButtonClick() {
         String email = emailField.getText();
         String password = passwordField.getText();
+
+        // --- Input Validation ---
+        if (!ValidationUtils.isNotBlank(email) || !ValidationUtils.isNotBlank(password)) {
+            showAlert("Validation Error", "Email and password are required.");
+            return;
+        }
+        if (!ValidationUtils.isEmailValid(email)) {
+            showAlert("Validation Error", "Please enter a valid email address.");
+            return;
+        }
+        // --- End of Validation ---
+
         UserController userController = new UserController();
         try {
             var user = userController.login(email, password);
             if (user != null) {
                 try {
-                    messageLabel.setVisible(false);
                     Stage stage = (Stage) emailField.getScene().getWindow();
                     FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("home.fxml"));
                     Scene scene = new Scene(fxmlLoader.load());
@@ -43,18 +52,13 @@ public class LoginController {
                     stage.centerOnScreen();
                     stage.show();
                 } catch (IOException e) {
-                    messageLabel.setText("OPPS!!! Navigation broken. Try again.");
-                    System.out.println(e.getMessage());
-                    messageLabel.setVisible(true);
+                    showAlert("Navigation Error", "Oops! Navigation to home screen failed.");
                 }
             } else {
-                messageLabel.setText("No user found with the provided email.");
-                messageLabel.setVisible(true);
+                showAlert("Login Failed", "Invalid email or password.");
             }
         } catch (Exception e) {
-            messageLabel.setText("Error: " + e.getMessage());
-            messageLabel.setVisible(true);
-            return;
+            showAlert("Login Error", "An error occurred during login: " + e.getMessage());
         }
     }
 
@@ -68,6 +72,14 @@ public class LoginController {
         stage.setResizable(false);
         stage.centerOnScreen();
         stage.show();
+    }
+    
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
 

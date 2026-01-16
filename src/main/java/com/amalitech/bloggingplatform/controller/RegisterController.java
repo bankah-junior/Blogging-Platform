@@ -2,10 +2,11 @@ package com.amalitech.bloggingplatform.controller;
 
 import com.amalitech.bloggingplatform.Launcher;
 import com.amalitech.bloggingplatform.model.User;
+import com.amalitech.bloggingplatform.utils.ValidationUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
+import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -23,20 +24,44 @@ public class RegisterController {
     private PasswordField passwordField;
 
     @FXML
-    private Label messageLabel;
+    private PasswordField confirmPasswordField;
 
     @FXML
     protected void onRegisterButtonClick() {
         String username = usernameField.getText();
         String email = emailField.getText();
         String password = passwordField.getText();
+        String confirmPassword = confirmPasswordField.getText();
+
+        // --- Input Validation ---
+        if (!ValidationUtils.isNotBlank(username) || !ValidationUtils.isNotBlank(email) || !ValidationUtils.isNotBlank(password)) {
+            showAlert("Validation Error", "All fields are required.");
+            return;
+        }
+        if (!ValidationUtils.isUsernameValid(username)) {
+            showAlert("Validation Error", "Username must be 3-20 characters long and can only contain letters, numbers, and underscores.");
+            return;
+        }
+        if (!ValidationUtils.isEmailValid(email)) {
+            showAlert("Validation Error", "Please enter a valid email address.");
+            return;
+        }
+        if (!ValidationUtils.isPasswordValid(password)) {
+            showAlert("Validation Error", "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character (@$!%*?&).");
+            return;
+        }
+        if (!password.equals(confirmPassword)) {
+            showAlert("Validation Error", "Passwords do not match.");
+            return;
+        }
+        // --- End of Validation ---
+
         UserController userController = new UserController();
         User newUser = new User(null, username, email, password, null, null);
         try {
             var user = userController.register(newUser);
             if (user != null) {
                 try {
-                    messageLabel.setVisible(false);
                     Stage stage = (Stage) usernameField.getScene().getWindow();
                     FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("home.fxml"));
                     Scene scene = new Scene(fxmlLoader.load());
@@ -49,17 +74,13 @@ public class RegisterController {
                     stage.centerOnScreen();
                     stage.show();
                 } catch (IOException e) {
-                    messageLabel.setText("OPPS!!! Navigation broken. Try again.");
-                    messageLabel.setVisible(true);
+                    showAlert("Navigation Error", "Oops! Navigation to home screen failed. Please try logging in.");
                 }
             } else {
-                messageLabel.setText("Registration failed. Please try again.");
-                messageLabel.setVisible(true);
+                showAlert("Registration Failed", "Registration failed. The email or username might already be taken.");
             }
         } catch (Exception e) {
-            messageLabel.setText("Error: " + e.getMessage());
-            messageLabel.setVisible(true);
-            return;
+            showAlert("Registration Error", "An error occurred during registration: " + e.getMessage());
         }
     }
 
@@ -73,6 +94,14 @@ public class RegisterController {
         stage.setResizable(false);
         stage.centerOnScreen();
         stage.show();
+    }
+    
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
 
