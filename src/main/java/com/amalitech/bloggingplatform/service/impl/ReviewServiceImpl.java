@@ -5,6 +5,7 @@ import com.amalitech.bloggingplatform.dao.impl.ReviewDAOImpl;
 import com.amalitech.bloggingplatform.model.Review;
 import com.amalitech.bloggingplatform.service.ReviewService;
 import com.amalitech.bloggingplatform.utils.MongoDBConnection;
+import com.mongodb.client.MongoDatabase;
 
 import java.util.List;
 
@@ -12,7 +13,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewDAO reviewDAO;
 
     public ReviewServiceImpl() {
-        this.reviewDAO = new ReviewDAOImpl(MongoDBConnection.connect().getDatabase("java-demo"));
+        MongoDatabase database = MongoDBConnection.getDatabase();
+        this.reviewDAO = new ReviewDAOImpl(database);
     }
 
     @Override

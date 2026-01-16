@@ -45,8 +45,7 @@ public class PostEditorController {
     @FXML
     public void initialize() {
         postService = new PostServiceImpl();
-        MongoClient client = MongoDBConnection.connect();
-        MongoDatabase db = client.getDatabase("java-demo");
+        MongoDatabase db = MongoDBConnection.getDatabase();
         TagDAOImpl tagDAO = new TagDAOImpl(db);
         tagService = new TagServiceImpl(tagDAO);
     }

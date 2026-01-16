@@ -3,14 +3,13 @@ package com.amalitech.bloggingplatform;
 import com.amalitech.bloggingplatform.dao.impl.*;
 import com.amalitech.bloggingplatform.model.*;
 import com.amalitech.bloggingplatform.utils.MongoDBConnection;
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
 public class Main {
     public static void main(String[] args) {
-        MongoClient client = MongoDBConnection.connect();
         try {
-            MongoDatabase db = client.getDatabase("java-demo");
+            // Get the singleton MongoDatabase instance
+            MongoDatabase db = MongoDBConnection.getDatabase();
 
             UserDAOImpl userDAO = new UserDAOImpl(db);
             TagDAOImpl tagDAO = new TagDAOImpl(db);
@@ -64,8 +63,8 @@ public class Main {
             Post post3 = new Post(
                     null,
                     forexUser.getId(),
-                    "Before the Charts, Learn the Game: Why Trading Fundamentals Are Non-Negotiable",
-                    "Indicators, bots, and strategies won’t save you if you don’t understand the basics. Here’s why every trader must master the fundamentals first.",
+                    "Before the Charts, Learn the Game",
+                    "Indicators, bots, and strategies won’t save you if you don’t understand the basics.",
                     true,
                     null,
                     null
@@ -76,15 +75,15 @@ public class Main {
             postDAO.save(post3);
 
             // Assign tags to posts
-            tagDAO.assignTagToPost(post1.getPostId(), forexTag.getId());
-            tagDAO.assignTagToPost(post1.getPostId(), tradingTag.getId());
-            tagDAO.assignTagToPost(post2.getPostId(), forexTag.getId());
-            tagDAO.assignTagToPost(post2.getPostId(), tradingTag.getId());
-            tagDAO.assignTagToPost(post2.getPostId(), strategyTag.getId());
-            tagDAO.assignTagToPost(post3.getPostId(), forexTag.getId());
-            tagDAO.assignTagToPost(post3.getPostId(), tradingTag.getId());
-            tagDAO.assignTagToPost(post3.getPostId(), strategyTag.getId());
-            tagDAO.assignTagToPost(post3.getPostId(), fundamentalsTag.getId());
+            tagDAO.assignTagToPost(post1.getId(), forexTag.getId());
+            tagDAO.assignTagToPost(post1.getId(), tradingTag.getId());
+            tagDAO.assignTagToPost(post2.getId(), forexTag.getId());
+            tagDAO.assignTagToPost(post2.getId(), tradingTag.getId());
+            tagDAO.assignTagToPost(post2.getId(), strategyTag.getId());
+            tagDAO.assignTagToPost(post3.getId(), forexTag.getId());
+            tagDAO.assignTagToPost(post3.getId(), tradingTag.getId());
+            tagDAO.assignTagToPost(post3.getId(), strategyTag.getId());
+            tagDAO.assignTagToPost(post3.getId(), fundamentalsTag.getId());
 
             // Update a Forex post
             post1.setContent("Learn the basics of Forex markets, currency pairs, leverage, and trading sessions.");
@@ -93,7 +92,7 @@ public class Main {
             // Add comment
             Comment comment = new Comment(
                     null,
-                    post1.getPostId(),
+                    post1.getId(),
                     forexUser.getId(),
                     "Great introduction for beginners!",
                     null,
@@ -104,7 +103,7 @@ public class Main {
             // Add review
             Review review = new Review(
                     null,
-                    post1.getPostId(),
+                    post1.getId(),
                     forexUser.getId(),
                     5,
                     "Very informative and easy to understand.",
@@ -118,8 +117,6 @@ public class Main {
         } catch (Exception e) {
             System.err.println("Error occurred: " + e.getMessage());
             e.printStackTrace();
-        } finally {
-            client.close();
         }
     }
 }
