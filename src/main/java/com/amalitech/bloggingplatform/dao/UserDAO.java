@@ -12,5 +12,9 @@ public interface UserDAO extends BaseDAO<User> {
 
     Optional<User> login(String email, String password);
 
+    boolean updateUserDetails(User user);
+
+    boolean updatePassword(String userId, String newPasswordHash);
+
 }
 

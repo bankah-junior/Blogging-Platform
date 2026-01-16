@@ -115,6 +115,33 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public boolean updateUserDetails(User user) {
+        Document update = new Document("$set",
+                new Document("username", user.getUsername())
+                        .append("email", user.getEmail())
+                        .append("updatedAt", System.currentTimeMillis())
+        );
+
+        return usersCollection.updateOne(
+                eq("_id", new ObjectId(user.getId())),
+                update
+        ).getModifiedCount() > 0;
+    }
+
+    @Override
+    public boolean updatePassword(String userId, String newPasswordHash) {
+        Document update = new Document("$set",
+                new Document("passwordHash", newPasswordHash)
+                        .append("updatedAt", System.currentTimeMillis())
+        );
+
+        return usersCollection.updateOne(
+                eq("_id", new ObjectId(userId)),
+                update
+        ).getModifiedCount() > 0;
+    }
+
+    @Override
     public boolean deleteById(String id) {
         return usersCollection
                 .deleteOne(eq("_id", new ObjectId(id)))

@@ -2,6 +2,7 @@ package com.amalitech.bloggingplatform.service.impl;
 
 import com.amalitech.bloggingplatform.cache.Cache;
 import com.amalitech.bloggingplatform.cache.LruCache;
+import com.amalitech.bloggingplatform.dao.PostDAO;
 import com.amalitech.bloggingplatform.dao.ReviewDAO;
 import com.amalitech.bloggingplatform.dao.impl.PostDAOImpl;
 import com.amalitech.bloggingplatform.dao.impl.ReviewDAOImpl;
@@ -9,7 +10,6 @@ import com.amalitech.bloggingplatform.model.Post;
 import com.amalitech.bloggingplatform.model.Review;
 import com.amalitech.bloggingplatform.service.PostService;
 import com.amalitech.bloggingplatform.utils.MongoDBConnection;
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 
 import java.util.ArrayList;
@@ -17,156 +17,94 @@ import java.util.List;
 import java.util.Optional;
 
 public class PostServiceImpl implements PostService {
-    private final Cache<String, Post> postCache;
+    private final PostDAO postDAO;
     private final ReviewDAO reviewDAO;
+    private final Cache<String, Post> postCache;
+
 
     public PostServiceImpl() {
+        MongoDatabase database = MongoDBConnection.getDatabase();
+        this.postDAO = new PostDAOImpl(database);
+        this.reviewDAO = new ReviewDAOImpl(database);
         this.postCache = new LruCache<>(50);
-        this.reviewDAO = new ReviewDAOImpl(MongoDBConnection.connect().getDatabase("java-demo"));
     }
 
     @Override
     public Post create(Post post) {
-        MongoClient client = MongoDBConnection.connect();
-        try{
-            MongoDatabase db = client.getDatabase("java-demo");
-            PostDAOImpl postDAO = new PostDAOImpl(db);
-            Post saved = postDAO.save(post);
+        Post saved = postDAO.save(post);
+        if (saved != null) {
             postCache.put(saved.getId(), saved);
-            return saved;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to create post", e);
-        } finally {
-            client.close();
         }
+        return saved;
     }
 
     @Override
     public Post update(Post post) {
-        MongoClient client = MongoDBConnection.connect();
-        try{
-            MongoDatabase db = client.getDatabase("java-demo");
-            PostDAOImpl postDAO = new PostDAOImpl(db);
-            if(postDAO.update(post)){
-                postCache.put(post.getId(), post);
-                return post;
-            }
-            return null;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to update post", e);
-        } finally {
-            client.close();
+        if (postDAO.update(post)) {
+            postCache.put(post.getId(), post);
+            return post;
         }
+        return null;
     }
 
     @Override
     public boolean delete(String postId) {
-        MongoClient client = MongoDBConnection.connect();
-        try{
-            MongoDatabase db = client.getDatabase("java-demo");
-            PostDAOImpl postDAO = new PostDAOImpl(db);
-            if(postDAO.deleteById(postId)){
-                postCache.remove(postId);
-                return true;
-            }
-            return false;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to delete post", e);
-        } finally {
-            client.close();
+        if (postDAO.deleteById(postId)) {
+            postCache.remove(postId);
+            return true;
         }
+        return false;
     }
 
     @Override
     public Post getById(String postId) {
-        MongoClient client = MongoDBConnection.connect();
-        try{
-            MongoDatabase db = client.getDatabase("java-demo");
-            PostDAOImpl postDAO = new PostDAOImpl(db);
-            Optional<Post> postOptional = postDAO.findById(postId);
-            if(postOptional.isPresent()){
-                Post post = postOptional.get();
-                List<Review> reviews = reviewDAO.findByPostId(postId);
-                post.setReviews(reviews);
-                postCache.put(postId, post);
-                return post;
-            }
-            return postCache.get(postId);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to get post", e);
-        } finally {
-            client.close();
+        // Check cache first
+        Post cachedPost = postCache.get(postId);
+        if (cachedPost != null) {
+            return cachedPost;
         }
+
+        Optional<Post> postOptional = postDAO.findById(postId);
+        if (postOptional.isPresent()) {
+            Post post = postOptional.get();
+            List<Review> reviews = reviewDAO.findByPostId(postId);
+            post.setReviews(reviews);
+            postCache.put(postId, post); // Add to cache
+            return post;
+        }
+        return null;
     }
 
     @Override
     public List<Post> getAll() {
-        MongoClient client = MongoDBConnection.connect();
-        try{
-            MongoDatabase db = client.getDatabase("java-demo");
-            PostDAOImpl postDAO = new PostDAOImpl(db);
-            List<Post> posts = postDAO.findAll();
-            for (Post post : posts) {
-                List<Review> reviews = reviewDAO.findByPostId(post.getId());
-                post.setReviews(reviews);
-                postCache.put(post.getId(), post);
-            }
-            return posts;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to get all posts", e);
-        } finally {
-            client.close();
+        List<Post> posts = postDAO.findAll();
+        for (Post post : posts) {
+            List<Review> reviews = reviewDAO.findByPostId(post.getId());
+            post.setReviews(reviews);
+            postCache.put(post.getId(), post);
         }
+        return posts;
     }
 
     @Override
     public List<Post> searchByTitle(String keyword) {
-        MongoClient client = MongoDBConnection.connect();
-        try{
-            MongoDatabase db = client.getDatabase("java-demo");
-            PostDAOImpl postDAO = new PostDAOImpl(db);
-            List<Post> posts = postDAO.searchByTitle(keyword);
-            posts.forEach(post -> postCache.put(post.getId(), post));
-            return posts;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to search posts", e);
-        } finally {
-            client.close();
-        }
+        List<Post> posts = postDAO.searchByTitle(keyword);
+        posts.forEach(post -> postCache.put(post.getId(), post));
+        return posts;
     }
 
     @Override
     public List<Post> getByAuthor(String authorId) {
-        MongoClient client = MongoDBConnection.connect();
-        try{
-            MongoDatabase db = client.getDatabase("java-demo");
-            PostDAOImpl postDAO = new PostDAOImpl(db);
-            List<Post> posts = postDAO.findByAuthorId(authorId);
-            posts.forEach(post -> postCache.put(post.getId(), post));
-            return posts;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to get posts by author", e);
-        } finally {
-            client.close();
-        }
+        List<Post> posts = postDAO.findByAuthorId(authorId);
+        posts.forEach(post -> postCache.put(post.getId(), post));
+        return posts;
     }
 
     @Override
     public List<Post> searchByTag(String tagName) {
-        MongoClient client = MongoDBConnection.connect();
-        try{
-            MongoDatabase db = client.getDatabase("java-demo");
-            PostDAOImpl postDAO = new PostDAOImpl(db);
-            // This will need to be implemented in DAO to search posts by tag
-            // For now, return all posts and filter by tag in service layer
-            List<Post> allPosts = postDAO.findAll();
-            // TODO: Implement proper tag-based search in DAO
-            return allPosts;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to search posts by tag", e);
-        } finally {
-            client.close();
-        }
+        // TODO: Implement proper tag-based search in DAO
+        List<Post> allPosts = postDAO.findAll();
+        return allPosts;
     }
 
     @Override

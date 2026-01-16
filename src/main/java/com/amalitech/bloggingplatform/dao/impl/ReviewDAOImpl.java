@@ -21,7 +21,7 @@ public class ReviewDAOImpl implements ReviewDAO {
 
     public ReviewDAOImpl(MongoDatabase database) {
         if (database == null) {
-            database = MongoDBConnection.connect().getDatabase("java-demo");
+            throw new IllegalArgumentException("database must not be null");
         }
         this.reviewsCollection = database.getCollection("reviews", Document.class);
 

@@ -97,9 +97,8 @@ public class BlogItemController {
     
     private void loadTags() {
         tagsContainer.getChildren().clear();
-        MongoClient client = MongoDBConnection.connect();
         try {
-            MongoDatabase db = client.getDatabase("java-demo");
+            MongoDatabase db = MongoDBConnection.getDatabase();
             TagDAOImpl tagDAO = new TagDAOImpl(db);
             TagServiceImpl tagService = new TagServiceImpl(tagDAO);
             List<com.amalitech.bloggingplatform.model.Tag> tags = tagService.getTagsByPost(post.getId());
@@ -110,10 +109,6 @@ public class BlogItemController {
             }
         } catch (Exception e) {
             System.err.println("Error loading tags: " + e.getMessage());
-        } finally {
-            if (client != null) {
-                client.close();
-            }
         }
     }
 

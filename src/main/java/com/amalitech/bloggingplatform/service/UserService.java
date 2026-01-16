@@ -19,5 +19,9 @@ public interface UserService {
     User getByEmail(String email);
 
     List<User> getAll();
+
+    boolean updateUserDetails(User user);
+
+    boolean changePassword(String userId, String oldPassword, String newPassword);
 }
 
