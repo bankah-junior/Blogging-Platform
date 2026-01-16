@@ -12,5 +12,6 @@ public interface TagDAO extends BaseDAO<Tag> {
     void assignTagToPost(String postId, String tagId);
 
     List<Tag> findTagsByPostId(String postId);
-}
 
+    void unassignAllTagsFromPost(String postId);
+}

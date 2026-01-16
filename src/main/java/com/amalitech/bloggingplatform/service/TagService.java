@@ -15,4 +15,6 @@ public interface TagService {
     void assignTagToPost(String postId, String tagId);
 
     List<Tag> getTagsByPost(String postId);
+
+    void unassignAllTagsFromPost(String postId);
 }

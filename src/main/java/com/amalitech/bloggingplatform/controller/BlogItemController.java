@@ -1,6 +1,7 @@
 package com.amalitech.bloggingplatform.controller;
 
 import com.amalitech.bloggingplatform.Launcher;
+import com.amalitech.bloggingplatform.dao.impl.TagDAOImpl;
 import com.amalitech.bloggingplatform.model.Comment;
 import com.amalitech.bloggingplatform.model.Post;
 import com.amalitech.bloggingplatform.model.Review;
@@ -8,13 +9,18 @@ import com.amalitech.bloggingplatform.model.User;
 import com.amalitech.bloggingplatform.service.impl.CommentServiceImpl;
 import com.amalitech.bloggingplatform.service.impl.PostServiceImpl;
 import com.amalitech.bloggingplatform.service.impl.ReviewServiceImpl;
+import com.amalitech.bloggingplatform.service.impl.TagServiceImpl;
+import com.amalitech.bloggingplatform.utils.MongoDBConnection;
 import com.amalitech.bloggingplatform.utils.exceptions.UserInputsException;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoDatabase;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -42,6 +48,9 @@ public class BlogItemController {
     @FXML private ChoiceBox<Integer> ratingChoiceBox;
     @FXML private TextArea reviewTextArea;
     @FXML private Button submitReviewButton;
+    @FXML private VBox commentsContainer;
+    @FXML private Separator commentSeparator;
+    @FXML private HBox tagsContainer;
 
     private Post post;
     private String currentUserId;
@@ -76,19 +85,35 @@ public class BlogItemController {
                 timeLabel.setText(dateTime.format(formatter));
             }
 
-            try {
-                List<Comment> comments = commentService.getByPost(post.getId());
-                commentsLabel.setText(String.valueOf(comments.size()));
-            } catch (Exception e) {
-                commentsLabel.setText("0");
-                System.err.println("Error loading comments: " + e.getMessage());
-            }
-
+            loadTags();
+            loadComments();
             setupButtons();
             loadReviews();
             initializeReviewForm();
         } catch (UserInputsException e) {
             System.err.println("Error loading blog item: " + e.getMessage());
+        }
+    }
+    
+    private void loadTags() {
+        tagsContainer.getChildren().clear();
+        MongoClient client = MongoDBConnection.connect();
+        try {
+            MongoDatabase db = client.getDatabase("java-demo");
+            TagDAOImpl tagDAO = new TagDAOImpl(db);
+            TagServiceImpl tagService = new TagServiceImpl(tagDAO);
+            List<com.amalitech.bloggingplatform.model.Tag> tags = tagService.getTagsByPost(post.getId());
+            for (com.amalitech.bloggingplatform.model.Tag tag : tags) {
+                Label tagLabel = new Label("#" + tag.getName());
+                tagLabel.setStyle("-fx-background-color: #eef2ff; -fx-text-fill: #4338ca; -fx-padding: 4 8; -fx-background-radius: 6; -fx-font-size: 12px; -fx-font-weight: bold;");
+                tagsContainer.getChildren().add(tagLabel);
+            }
+        } catch (Exception e) {
+            System.err.println("Error loading tags: " + e.getMessage());
+        } finally {
+            if (client != null) {
+                client.close();
+            }
         }
     }
 
@@ -168,11 +193,7 @@ public class BlogItemController {
             Comment created = commentService.create(comment);
             if (created != null && created.getId() != null) {
                 commentTextField.clear();
-                List<Comment> comments = commentService.getByPost(post.getId());
-                commentsLabel.setText(String.valueOf(comments.size()));
-                if (refreshCallback != null) {
-                    refreshCallback.run();
-                }
+                loadComments();
             } else {
                 showAlert("Error", "Failed to post comment.");
             }
@@ -198,6 +219,41 @@ public class BlogItemController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void loadComments() {
+        commentsContainer.getChildren().clear();
+        try {
+            List<Comment> comments = commentService.getByPost(post.getId());
+            commentsLabel.setText(String.valueOf(comments.size()));
+            commentSeparator.setVisible(!comments.isEmpty());
+            for (Comment comment : comments) {
+                commentsContainer.getChildren().add(createCommentNode(comment));
+            }
+        } catch (Exception e) {
+            commentsLabel.setText("0");
+            System.err.println("Error loading comments: " + e.getMessage());
+        }
+    }
+
+    private Node createCommentNode(Comment comment) {
+        VBox commentNode = new VBox(5);
+        commentNode.setStyle("-fx-padding: 8; -fx-background-color: #f1f5f9; -fx-background-radius: 8;");
+
+        Label authorLabel = new Label();
+        try {
+            User author = new UserController().getById(comment.getUserId());
+            authorLabel.setText(author.getUsername());
+        } catch (UserInputsException e) {
+            authorLabel.setText("Unknown user");
+        }
+
+        authorLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #4b5563;");
+        Label contentLabel = new Label(comment.getContent());
+        contentLabel.setWrapText(true);
+        contentLabel.setStyle("-fx-text-fill: #374151;");
+        commentNode.getChildren().addAll(authorLabel, contentLabel);
+        return commentNode;
     }
 
     private void initializeReviewForm() {
