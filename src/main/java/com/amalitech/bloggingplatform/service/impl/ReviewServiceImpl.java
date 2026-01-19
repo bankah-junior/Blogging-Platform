@@ -12,9 +12,12 @@ import java.util.List;
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewDAO reviewDAO;
 
+    public ReviewServiceImpl(ReviewDAO reviewDAO) {
+        this.reviewDAO = reviewDAO;
+    }
+
     public ReviewServiceImpl() {
-        MongoDatabase database = MongoDBConnection.getDatabase();
-        this.reviewDAO = new ReviewDAOImpl(database);
+        this(new ReviewDAOImpl(MongoDBConnection.getDatabase()));
     }
 
     @Override

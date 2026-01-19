@@ -13,9 +13,12 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentDAO commentDAO;
 
+    public CommentServiceImpl(CommentDAO commentDAO) {
+        this.commentDAO = commentDAO;
+    }
+
     public CommentServiceImpl() {
-        MongoDatabase database = MongoDBConnection.getDatabase();
-        this.commentDAO = new CommentDAOImpl(database);
+        this(new CommentDAOImpl(MongoDBConnection.getDatabase()));
     }
 
     @Override

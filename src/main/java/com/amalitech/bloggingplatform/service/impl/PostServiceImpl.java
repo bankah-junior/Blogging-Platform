@@ -22,6 +22,12 @@ public class PostServiceImpl implements PostService {
     private final Cache<String, Post> postCache;
 
 
+    public PostServiceImpl(PostDAO postDAO, ReviewDAO reviewDAO, Cache<String, Post> postCache) {
+        this.postDAO = postDAO;
+        this.reviewDAO = reviewDAO;
+        this.postCache = postCache;
+    }
+
     public PostServiceImpl() {
         MongoDatabase database = MongoDBConnection.getDatabase();
         this.postDAO = new PostDAOImpl(database);

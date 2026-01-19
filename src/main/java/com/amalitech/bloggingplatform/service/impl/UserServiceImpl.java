@@ -17,10 +17,13 @@ public class UserServiceImpl implements UserService {
     private final UserDAO userDAO;
     private final Cache<String, User> userCache;
 
+    public UserServiceImpl(UserDAO userDAO, Cache<String, User> userCache) {
+        this.userDAO = userDAO;
+        this.userCache = userCache;
+    }
+
     public UserServiceImpl() {
-        MongoDatabase database = MongoDBConnection.getDatabase();
-        this.userDAO = new UserDAOImpl(database);
-        this.userCache = new LruCache<>(50);
+        this(new UserDAOImpl(MongoDBConnection.getDatabase()), new LruCache<>(50));
     }
 
     @Override

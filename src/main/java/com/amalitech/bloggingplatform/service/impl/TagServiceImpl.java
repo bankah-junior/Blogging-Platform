@@ -6,12 +6,23 @@ import com.amalitech.bloggingplatform.service.TagService;
 
 import java.util.List;
 
+import com.amalitech.bloggingplatform.dao.impl.TagDAOImpl;
+import com.amalitech.bloggingplatform.utils.MongoDBConnection;
+import com.mongodb.client.MongoDatabase;
+
+import java.util.List;
+
 public class TagServiceImpl implements TagService {
 
     private final TagDAO tagDao;
 
     public TagServiceImpl(TagDAO tagDao) {
         this.tagDao = tagDao;
+    }
+
+    public TagServiceImpl() {
+        MongoDatabase database = MongoDBConnection.getDatabase();
+        this.tagDao = new TagDAOImpl(database);
     }
 
     @Override
@@ -34,26 +45,13 @@ public class TagServiceImpl implements TagService {
         tagDao.assignTagToPost(postId, tagId);
     }
 
-    
-
-        @Override
-
-        public List<Tag> getTagsByPost(String postId) {
-
-            return tagDao.findTagsByPostId(postId);
-
-        }
-
-    
-
-        @Override
-
-        public void unassignAllTagsFromPost(String postId) {
-
-            tagDao.unassignAllTagsFromPost(postId);
-
-        }
-
+    @Override
+    public List<Tag> getTagsByPost(String postId) {
+        return tagDao.findTagsByPostId(postId);
     }
 
-    
+    @Override
+    public void unassignAllTagsFromPost(String postId) {
+        tagDao.unassignAllTagsFromPost(postId);
+    }
+}    
