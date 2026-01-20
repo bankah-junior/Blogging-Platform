@@ -233,14 +233,6 @@ post_tags
 }
 ```
 
-#### Indexes
-
-```js
-db.post_tags.createIndex({ postId: 1 })
-db.post_tags.createIndex({ tagId: 1 })
-db.post_tags.createIndex({ postId: 1, tagId: 1 }, { unique: true })
-```
-
 ### Design Notes
 
 * Many-to-many relationship

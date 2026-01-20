@@ -10,7 +10,7 @@ This project emphasizes **engineering correctness, scalability, and performance*
 ---
 
 ## Homepage Screenshot
-![Homepage Screenshot](homepage.png)
+![Homepage Screenshot](home.png)
 
 ---
 
@@ -97,7 +97,7 @@ The application connects to MongoDB at `mongodb://127.0.0.1:27017` by default.
 
 If your MongoDB is running on a different host/port, update the connection string in:
 ```
-src/main/java/com/amalitech/nosqlblog/utils/MongoDBConnection.java
+src/main/java/com/amalitech/bloggingplatform/utils/MongoDBConnection.java
 ```
 
 ### 4. Build the Project
@@ -123,12 +123,12 @@ mvn clean javafx:run
 mvn clean compile
 
 # Run the launcher
-java --module-path <path-to-javafx> --add-modules javafx.controls,javafx.fxml -cp target/classes com.amalitech.nosqlblog.Launcher
+java --module-path <path-to-javafx> --add-modules javafx.controls,javafx.fxml -cp target/classes com.amalitech.bloggingplatform.Launcher
 ```
 
 **Option 3: Using IDE**
 - Open the project in your IDE
-- Run the `Launcher.java` class (located in `src/main/java/com/amalitech/nosqlblog/`)
+- Run the `Launcher.java` class (located in `src/main/java/com/amalitech/bloggingplatform/`)
 
 ---
 
@@ -177,7 +177,7 @@ NoSQL-Blog-App/
 ├── src/
 │   ├── main/
 │   │   ├── java/
-│   │   │   └── com/amalitech/nosqlblog/
+│   │   │   └── com/amalitech/bloggingplatform/
 │   │   │       ├── cache/          # Caching implementation
 │   │   │       ├── controller/     # JavaFX controllers
 │   │   │       ├── dao/            # Data Access Objects
@@ -185,7 +185,7 @@ NoSQL-Blog-App/
 │   │   │       ├── service/         # Business logic
 │   │   │       └── utils/          # Utility classes
 │   │   └── resources/
-│   │       └── com/amalitech/nosqlblog/
+│   │       └── com/amalitech/bloggingplatform/
 │   │           └── *.fxml         # JavaFX UI files
 │   └── test/                       # Test files
 ├── docs/

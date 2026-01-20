@@ -24,6 +24,8 @@ public class CommentDAOImpl implements CommentDAO {
         this.commentsCollection = database.getCollection("comments", Document.class);
 
         commentsCollection.createIndex(new Document("postId", 1));
+
+        commentsCollection.createIndex(new Document("userId", 1));
     }
 
     @Override

@@ -69,15 +69,11 @@ Normalization up to **Third Normal Form (3NF)** was applied to:
 
 ### 3.3 Physical Modeling
 In the physical model:
-- SQL data types were selected based on usage and constraints
-- NOT NULL, UNIQUE, and FOREIGN KEY constraints enforce integrity
-- Indexes were added to frequently queried columns such as:
-  - Post title
-  - Author ID
-  - Tag name
-
-This layer directly supports efficient query execution and scalability.
-
+- NoSQL (MongoDB) was chosen for its flexibility and scalability
+- Collections were designed to reflect entities while allowing for embedded documents where appropriate (e.g., comments within posts)
+- Indexes were created on frequently queried fields (e.g., `username`, `post_date`, `tags`)
+- Denormalization was applied judiciously to optimize read performance without sacrificing data integrity
+![Database Design Diagram](BlogPlatform_ERD.png)
 ---
 
 ## 4. SQL vs NoSQL Design Decision
@@ -418,7 +414,7 @@ The focus was not just to "make it work", but to **make it correct, efficient, a
 This project demonstrates a holistic understanding of:
 - Database fundamentals
 - Data structures and algorithms in real systems
-- JavaFX and JDBC integration
+- JavaFX application architecture
 - Performance optimization techniques
 
 The resulting system serves as a solid foundation for future modules of the Smart Blogging Platform.
