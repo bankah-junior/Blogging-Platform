@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="762038c5-03ff-4f48-ba9f-5807c64d4807" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/.gitattributes" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/mvnw" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/mvnw.cmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/SpringBootBloggingAppApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/repository/impl/UserRepositoryImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/test/java/com/amalitech/SpringBootBloggingApp/SpringBootBloggingAppApplicationTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/MarsCodeWorkspaceAppSettings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.ask.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/create_database.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/sample_data.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/schema.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/BlogPlatform_ERD.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/DATABASE_DESIGN.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/PERFORMANCE_REPORT.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/THOUGHTPROCESS.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/home.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/Launcher.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/cache/Cache.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/cache/CacheKey.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/cache/LruCache.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/controller/AnalyticsController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/controller/BlogItemController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/controller/HomeController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/controller/LoginController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/controller/PostController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/controller/PostEditorController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/controller/ProfileSettingsController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/controller/RegisterController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/controller/ReviewController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/controller/UserController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/dao/BaseDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/dao/CommentDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/dao/PostDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/dao/ReviewDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/dao/TagDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/dao/UserDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/dao/impl/CommentDAOImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/dao/impl/PostDAOImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/dao/impl/ReviewDAOImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/dao/impl/TagDAOImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/dao/impl/UserDAOImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/model/Comment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/model/Post.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/model/PostTag.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/model/Review.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/model/Tag.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/model/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/service/CommentService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/service/PostService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/service/ReviewService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/service/TagService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/service/UserService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/service/impl/CommentServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/service/impl/PostServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/service/impl/ReviewServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/service/impl/TagServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/service/impl/UserServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/utils/MongoDBConnection.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/utils/PasswordUtils.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/utils/PostgreSQLConnection.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/utils/ValidationUtils.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/amalitech/bloggingplatform/utils/exceptions/UserInputsException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/amalitech/bloggingplatform/analytics.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/amalitech/bloggingplatform/auth-bg.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/amalitech/bloggingplatform/blog-item.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/amalitech/bloggingplatform/home.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/amalitech/bloggingplatform/login.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/amalitech/bloggingplatform/logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/amalitech/bloggingplatform/post-editor.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/amalitech/bloggingplatform/profile-settings.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/amalitech/bloggingplatform/register.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/logback.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/amalitech/bloggingplatform/cache/LruCacheTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/amalitech/bloggingplatform/service/impl/CommentServiceImplTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/amalitech/bloggingplatform/service/impl/PostServiceImplTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/amalitech/bloggingplatform/service/impl/ReviewServiceImplTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/amalitech/bloggingplatform/service/impl/TagServiceImplTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/amalitech/bloggingplatform/service/impl/UserServiceImplTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/amalitech/bloggingplatform/utils/MongoDBConnectionTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/amalitech/bloggingplatform/utils/PasswordUtilsTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/amalitech/bloggingplatform/utils/ValidationUtilsTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/cache/Cache.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/cache/Cache.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/cache/CacheKey.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/cache/CacheKey.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/cache/LruCache.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/cache/LruCache.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/config/CorsConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/controller/CommentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/controller/CommentController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/controller/PostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/controller/PostController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/controller/ReviewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/controller/ReviewController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/controller/TagController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/controller/TagController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/dto/request/LoginRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/dto/request/LoginRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/dto/request/RegisterRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/dto/request/RegisterRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/dto/request/UpdatePasswordRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/dto/request/UpdatePasswordRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/dto/request/UpdateUserDetailRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/dto/request/UpdateUserDetailRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/dto/request/UpdateUserRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/dto/request/UpdateUserRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/dto/response/UserResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/dto/response/UserResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/entity/Comment.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/entity/Comment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/entity/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/entity/Post.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/entity/PostTag.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/entity/PostTag.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/entity/Review.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/entity/Review.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/entity/Tag.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/entity/Tag.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/model/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/repository/BaseRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/repository/BaseRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/repository/CommentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/repository/CommentRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/repository/PostRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/repository/PostRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/repository/ReviewRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/repository/ReviewRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/repository/TagRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/repository/TagRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/repository/impl/CommentRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/repository/impl/CommentRepositoryImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/repository/impl/PostRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/repository/impl/PostRepositoryImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/repository/impl/ReviewRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/repository/impl/ReviewRepositoryImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/repository/impl/TagRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/repository/impl/TagRepositoryImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/service/CommentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/service/CommentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/service/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/service/PostService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/service/ReviewService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/service/ReviewService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/service/TagService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/service/TagService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/service/impl/CommentServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/service/impl/CommentServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/service/impl/PostServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/service/impl/PostServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/service/impl/ReviewServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/service/impl/ReviewServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/service/impl/TagServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/service/impl/TagServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/util/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/util/JwtUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/util/PasswordUtil.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/util/ValidationUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Java-Spring/SpringBootBloggingApp/src/main/java/com/amalitech/SpringBootBloggingApp/util/ValidationUtil.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="FxmlFile" />
+        <option value="Class" />
+        <option value="JUnit5 Test Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;bankah-junior&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/bankah-junior/Java-Projects.git&quot;,
+    &quot;accountId&quot;: &quot;9ec667b6-d646-4299-8559-74122a486c02&quot;
+  }
+}</component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="37yF6vJM7E859J1lSKgUukVH1TY" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Launcher.executor": "Run",
+    "Application.Main.executor": "Run",
+    "JUnit.bloggingplatform in Blogging-Platform.executor": "Run",
+    "JUnit.utils in Blogging-Platform.executor": "Run",
+    "Maven.Blogging-Platform [test].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "git-widget-placeholder": "feature/javafx-springboot",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/AnthonyBekoeBankah/OneDrive - AmaliTech gGmbH/Desktop/Java Projects/Blogging-Platform/docs",
+    "project.structure.last.edited": "SDKs",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\AnthonyBekoeBankah\OneDrive - AmaliTech gGmbH\Desktop\Java Projects\Blogging-Platform\docs" />
+      <recent name="C:\Users\AnthonyBekoeBankah\OneDrive - AmaliTech gGmbH\Desktop\Java Projects\Blogging-Platform\src\main\resources\com\amalitech\bloggingplatform" />
+      <recent name="C:\Users\AnthonyBekoeBankah\OneDrive - AmaliTech gGmbH\Desktop\Java Projects\Blogging-Platform\src\main\java\com\amalitech\bloggingplatform" />
+      <recent name="C:\Users\AnthonyBekoeBankah\OneDrive - AmaliTech gGmbH\Desktop\Java Projects\Blogging-Platform\src\main\java\com\amalitech\bloggingplatform\controller" />
+      <recent name="C:\Users\AnthonyBekoeBankah\OneDrive - AmaliTech gGmbH\Desktop\Java Projects\Blogging-Platform\src\main\java\com\amalitech\bloggingplatform\service" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.amalitech.bloggingplatform.cache" />
+      <recent name="com.amalitech.bloggingplatform.utils" />
+      <recent name="com.amalitech.bloggingplatform.service.impl" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.amalitech.bloggingplatform.controller" />
+    </key>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="762038c5-03ff-4f48-ba9f-5807c64d4807" name="Changes" comment="" />
+      <created>1767867233881</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1767867233881</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Dev branch created">
+      <option name="closed" value="true" />
+      <created>1768203842662</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1768203842662</updated>
+    </task>
+    <task id="LOCAL-00002" summary="docs(core): Add comprehensive project documentation&#10;&#10;Add DATABASE_DESIGN.md, PERFORMANCE_REPORT.md, and THOUGHTPROCESS.md.&#10;Update README.md with detailed setup, features, and usage guide.">
+      <option name="closed" value="true" />
+      <created>1768205047086</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1768205047086</updated>
+    </task>
+    <task id="LOCAL-00003" summary="feat(models): Implement initial data models for platform">
+      <option name="closed" value="true" />
+      <created>1768205398162</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1768205398162</updated>
+    </task>
+    <task id="LOCAL-00004" summary="feat(utils): Add password hashing and validation utilities">
+      <option name="closed" value="true" />
+      <created>1768205694243</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1768205694243</updated>
+    </task>
+    <task id="LOCAL-00005" summary="feat(cache): Implement LRU cache mechanism&#10;&#10;Implement the Cache interface with generic types.&#10;Add CacheKey class for cache key management.&#10;Introduce LruCache for efficient caching with LinkedHashMap.">
+      <option name="closed" value="true" />
+      <created>1768205878345</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1768205878345</updated>
+    </task>
+    <task id="LOCAL-00006" summary="feat(dao): Implement MongoDB persistence for DAOs">
+      <option name="closed" value="true" />
+      <created>1768206846709</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1768206846709</updated>
+    </task>
+    <task id="LOCAL-00007" summary="feat(service): Implement core service logic for entities">
+      <option name="closed" value="true" />
+      <created>1768207140608</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1768207140608</updated>
+    </task>
+    <task id="LOCAL-00008" summary="refactor(controllers): Initialize and update all JavaFX controllers">
+      <option name="closed" value="true" />
+      <created>1768208319593</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1768208319593</updated>
+    </task>
+    <task id="LOCAL-00009" summary="feat(ui): Design FXMLs for analytics, blog-items, register, login, home, and post-editor views">
+      <option name="closed" value="true" />
+      <created>1768208910005</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1768208910005</updated>
+    </task>
+    <task id="LOCAL-00010" summary="feat(reviews): Implement post review functionality">
+      <option name="closed" value="true" />
+      <created>1768385689418</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1768385689418</updated>
+    </task>
+    <task id="LOCAL-00011" summary="feat(post): Implement tags and comment display on blog item&#10;&#10;Refactor PostEditorController to unassign old tags before assigning new ones.&#10;Add tag display to blog-item.fxml and BlogItemController.&#10;Update Main.java to include new tag handling.&#10;Implement unassignAllTagsFromPost in TagDAO and TagService.&#10;Introduce comment display functionality in BlogItemController and blog-item.fxml.">
+      <option name="closed" value="true" />
+      <created>1768560723593</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1768560723593</updated>
+    </task>
+    <task id="LOCAL-00012" summary="feat(validation): Implement comprehensive input validation&#10;&#10;Refactor login and registration to use a new ValidationUtils class.&#10;Add password confirmation field to registration.&#10;Improve error handling and user feedback with Alert dialogs instead of Labels.&#10;Remove old RegexValidatorUtils.">
+      <option name="closed" value="true" />
+      <created>1768562346157</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1768562346157</updated>
+    </task>
+    <task id="LOCAL-00013" summary="refactor(core): Streamline MongoDB connection and service logic&#10;&#10;Refactor MongoDB connection to a singleton pattern for improved resource management and consistency.&#10;Update service implementations (Comment, Post, Review, User) to use the new singleton database instance, removing redundant client connections and disconnections in each method.&#10;Enhance UserDAO and UserService with dedicated methods for updating user details and changing passwords, improving API clarity and security.&#10;Adjust BlogItemController and PostEditorController to align with the streamlined MongoDB connection and service updates.">
+      <option name="closed" value="true" />
+      <created>1768567201406</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1768567201406</updated>
+    </task>
+    <task id="LOCAL-00014" summary="feat(user-profile): Implement user profile settings UI">
+      <option name="closed" value="true" />
+      <created>1768574245233</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1768574245233</updated>
+    </task>
+    <task id="LOCAL-00015" summary="feat(test): Add unit tests">
+      <option name="closed" value="true" />
+      <created>1768835452723</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1768835452723</updated>
+    </task>
+    <task id="LOCAL-00016" summary="docs(database): Update database design and project documentation&#10;&#10;Refactor DATABASE_DESIGN.md for clarity and introduce a comprehensive SQL vs NoSQL comparison, explaining the rationale for choosing MongoDB. Also, update README.md and THOUGHTPROCESS.md with minor corrections and new screenshots for better project overview. Includes adding a new ERD diagram.">
+      <option name="closed" value="true" />
+      <created>1768924900038</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1768924900038</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Dev branch created" />
+    <MESSAGE value="docs(core): Add comprehensive project documentation&#10;&#10;Add DATABASE_DESIGN.md, PERFORMANCE_REPORT.md, and THOUGHTPROCESS.md.&#10;Update README.md with detailed setup, features, and usage guide." />
+    <MESSAGE value="feat(models): Implement initial data models for platform" />
+    <MESSAGE value="feat(utils): Add password hashing and validation utilities" />
+    <MESSAGE value="feat(cache): Implement LRU cache mechanism&#10;&#10;Implement the Cache interface with generic types.&#10;Add CacheKey class for cache key management.&#10;Introduce LruCache for efficient caching with LinkedHashMap." />
+    <MESSAGE value="feat(dao): Implement MongoDB persistence for DAOs" />
+    <MESSAGE value="feat(service): Implement core service logic for entities" />
+    <MESSAGE value="refactor(controllers): Initialize and update all JavaFX controllers" />
+    <MESSAGE value="feat(ui): Design FXMLs for analytics, blog-items, register, login, home, and post-editor views" />
+    <MESSAGE value="feat(reviews): Implement post review functionality" />
+    <MESSAGE value="feat(post): Implement tags and comment display on blog item&#10;&#10;Refactor PostEditorController to unassign old tags before assigning new ones.&#10;Add tag display to blog-item.fxml and BlogItemController.&#10;Update Main.java to include new tag handling.&#10;Implement unassignAllTagsFromPost in TagDAO and TagService.&#10;Introduce comment display functionality in BlogItemController and blog-item.fxml." />
+    <MESSAGE value="feat(validation): Implement comprehensive input validation&#10;&#10;Refactor login and registration to use a new ValidationUtils class.&#10;Add password confirmation field to registration.&#10;Improve error handling and user feedback with Alert dialogs instead of Labels.&#10;Remove old RegexValidatorUtils." />
+    <MESSAGE value="refactor(core): Streamline MongoDB connection and service logic&#10;&#10;Refactor MongoDB connection to a singleton pattern for improved resource management and consistency.&#10;Update service implementations (Comment, Post, Review, User) to use the new singleton database instance, removing redundant client connections and disconnections in each method.&#10;Enhance UserDAO and UserService with dedicated methods for updating user details and changing passwords, improving API clarity and security.&#10;Adjust BlogItemController and PostEditorController to align with the streamlined MongoDB connection and service updates." />
+    <MESSAGE value="feat(user-profile): Implement user profile settings UI" />
+    <MESSAGE value="feat(test): Add unit tests" />
+    <MESSAGE value="docs(database): Update database design and project documentation&#10;&#10;Refactor DATABASE_DESIGN.md for clarity and introduce a comprehensive SQL vs NoSQL comparison, explaining the rationale for choosing MongoDB. Also, update README.md and THOUGHTPROCESS.md with minor corrections and new screenshots for better project overview. Includes adding a new ERD diagram." />
+    <option name="LAST_COMMIT_MESSAGE" value="docs(database): Update database design and project documentation&#10;&#10;Refactor DATABASE_DESIGN.md for clarity and introduce a comprehensive SQL vs NoSQL comparison, explaining the rationale for choosing MongoDB. Also, update README.md and THOUGHTPROCESS.md with minor corrections and new screenshots for better project overview. Includes adding a new ERD diagram." />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
+  </component>
+</project>
