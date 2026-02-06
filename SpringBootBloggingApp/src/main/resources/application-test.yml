@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/blogging_platform_test
+      database: blogging_platform_test
+
+app:
+  cache:
+    ttl-ms: 300000
+

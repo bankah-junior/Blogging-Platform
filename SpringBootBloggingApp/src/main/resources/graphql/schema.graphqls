@@ -1,0 +1,107 @@
+type User {
+    id: ID!
+    username: String!
+    email: String!
+    createdAt: Int
+    updatedAt: Int
+    posts: [Post]
+}
+
+type Post {
+    id: ID!
+    title: String!
+    content: String!
+    published: Boolean!
+    author: User
+    reviews: [Review]
+    tags: [Tag]
+    createdAt: Int
+    updatedAt: Int
+}
+
+type Comment {
+    id: ID!
+    content: String!
+    user: User
+    post: Post
+    createdAt: Int
+    updatedAt: Int
+}
+
+type Review {
+    id: ID!
+    rating: Int!
+    feedback: String
+    user: User
+    post: Post
+    createdAt: Int
+    updatedAt: Int
+}
+
+type Tag {
+    id: ID!
+    name: String!
+    posts: [Post]
+}
+
+# ---------------------
+# Queries
+# ---------------------
+type Query {
+    users: [User]
+    posts: [Post]
+    comments: [Comment]
+    reviews: [Review]
+    tags: [Tag]
+    postById(id: ID!): Post
+}
+
+# ---------------------
+# Mutations
+# ---------------------
+type Mutation {
+    createPost(input: PostInput): Post
+    addComment(input: CommentInput): Comment
+    addReview(input: ReviewInput): Review
+    createTag(input: TagInput): Tag
+    createUser(input: UserInput): User
+    updateUser(input: UserUpdateInput): User
+}
+
+# ---------------------
+# Input Types
+# ---------------------
+input PostInput {
+    authorId: ID!
+    title: String!
+    content: String!
+}
+
+input CommentInput {
+    postId: ID!
+    userId: ID!
+    content: String!
+}
+
+input ReviewInput {
+    postId: ID!
+    userId: ID!
+    rating: Int!
+    feedback: String
+}
+
+input TagInput {
+    name: String!
+}
+
+input UserInput {
+    username: String!
+    email: String!
+    password: String!
+}
+
+input UserUpdateInput {
+    id: ID!
+    username: String
+    email: String
+}

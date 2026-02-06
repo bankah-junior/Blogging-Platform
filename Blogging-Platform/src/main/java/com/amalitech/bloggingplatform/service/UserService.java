@@ -1,0 +1,29 @@
+package com.amalitech.bloggingplatform.service;
+
+import com.amalitech.bloggingplatform.model.entity.User;
+
+import java.util.List;
+
+public interface UserService {
+
+    User create(User user);
+
+    User login(String email, String password);
+
+    User update(User user);
+
+    boolean delete(String userId);
+
+    User getById(String userId);
+
+    User getByEmail(String email);
+
+    List<User> getAll();
+
+    boolean updateUserDetails(User user);
+
+    boolean changePassword(String userId, String oldPassword, String newPassword);
+
+    User getByUsername(String username);
+}
+

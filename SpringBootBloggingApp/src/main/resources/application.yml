@@ -1,0 +1,16 @@
+spring:
+  profiles:
+    active: dev
+  graphql:
+    graphiql:
+          enabled: true
+
+app:
+  cache:
+    ttl-ms: 600000 # default TTL for cache entries (10 minutes)
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true

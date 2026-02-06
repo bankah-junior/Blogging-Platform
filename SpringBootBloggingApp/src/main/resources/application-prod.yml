@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
+      database: blogging_platform_prod
+
+app:
+  cache:
+    ttl-ms: 900000
+

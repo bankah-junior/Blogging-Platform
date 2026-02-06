@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="15"
+      style="-fx-padding: 20;
+             -fx-background-color: #ffffff;
+             -fx-background-radius: 12;
+             -fx-border-color: #e2e8f0;
+             -fx-border-width: 1;
+             -fx-border-radius: 12;
+             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);"
+      xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/17.0.12"
+      fx:controller="com.amalitech.bloggingplatform.controller.BlogItemController">
+
+    <!-- ================= TITLE ================= -->
+    <Label fx:id="titleLabel"
+           wrapText="true"
+           style="-fx-font-size: 22px;
+                  -fx-font-weight: bold;
+                  -fx-text-fill: #1e293b;
+                  -fx-padding: 0 0 5 0;" />
+
+    <!-- ================= META ================= -->
+    <HBox spacing="8" alignment="CENTER_LEFT">
+        <children>
+            <Label fx:id="authorLabel"
+                   style="-fx-text-fill: #6366f1; -fx-font-size: 14px; -fx-font-weight: bold;" />
+            <Label text="•" style="-fx-text-fill: #94a3b8; -fx-font-size: 14px;" />
+            <Label fx:id="timeLabel"
+                   text=""
+                   style="-fx-text-fill: #64748b; -fx-font-size: 13px;" />
+        </children>
+    </HBox>
+
+    <!-- ================= CONTENT ================= -->
+    <Label fx:id="contentLabel"
+           wrapText="true"
+           style="-fx-text-fill: #475569;
+                  -fx-font-size: 15px;
+                  -fx-line-spacing: 4px;
+                  -fx-padding: 10 0;" />
+                  
+    <!-- ================= TAGS ================= -->
+    <HBox fx:id="tagsContainer" spacing="8" alignment="CENTER_LEFT" style="-fx-padding: 5 0;" />
+
+    <!-- ================= STATS & ACTIONS ================= -->
+    <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-padding: 10 0; -fx-background-color: #f8fafc; -fx-background-radius: 8; -fx-padding: 12;">
+
+        <!-- Comments -->
+        <HBox spacing="6" alignment="CENTER_LEFT">
+            <Label text="💬" style="-fx-font-size: 16px;" />
+            <Label fx:id="commentsLabel" text="0" style="-fx-text-fill: #64748b; -fx-font-size: 14px; -fx-font-weight: bold;" />
+            <Label text="comments" style="-fx-text-fill: #94a3b8; -fx-font-size: 13px;" />
+        </HBox>
+
+        <Region HBox.hgrow="ALWAYS" />
+
+        <!-- Share -->
+        <Button text="Share"
+                mnemonicParsing="false"
+                fx:id="sharePostButton"
+                style="-fx-background-color: #e0e7ff; -fx-text-fill: #6366f1; -fx-background-radius: 6; -fx-padding: 6 12; -fx-cursor: hand; -fx-font-size: 13px; -fx-font-weight: bold;" />
+
+        <!-- Edit -->
+        <Button text="Edit"
+                mnemonicParsing="false"
+                fx:id="editPostButton"
+                style="-fx-background-color: #e0e7ff; -fx-text-fill: #6366f1; -fx-background-radius: 6; -fx-padding: 6 12; -fx-cursor: hand; -fx-font-size: 13px; -fx-font-weight: bold;" />
+
+        <!-- Delete -->
+        <Button text="Delete"
+                mnemonicParsing="false"
+                fx:id="deletePostButton"
+                style="-fx-background-color: #fee2e2; -fx-text-fill: #ef4444; -fx-background-radius: 6; -fx-padding: 6 12; -fx-cursor: hand; -fx-font-size: 13px; -fx-font-weight: bold;" />
+    </HBox>
+
+    <!-- ================= COMMENT INPUT ================= -->
+    <VBox spacing="8">
+        <children>
+            <Label text="Add a comment" style="-fx-text-fill: #64748b; -fx-font-size: 13px; -fx-font-weight: bold;" />
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <children>
+                    <TextField fx:id="commentTextField"
+                               promptText="Write your comment here..."
+                               HBox.hgrow="ALWAYS"
+                               style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e2e8f0; -fx-padding: 10; -fx-font-size: 14px;" />
+                    <Button text="Post Comment"
+                            mnemonicParsing="false"
+                            fx:id="postCommentButton"
+                            style="-fx-background-color: #6366f1; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 10 20; -fx-cursor: hand; -fx-font-size: 14px; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, rgba(99,102,241,0.3), 5, 0, 0, 2);" />
+                </children>
+            </HBox>
+                </children>
+            </VBox>
+            <Separator fx:id="commentSeparator" style="-fx-padding: 10 0 0 0;" visible="false"/>
+            <VBox fx:id="commentsContainer" spacing="10" style="-fx-padding: 10 0 0 0;" />
+            <!-- ================= REVIEW SECTION ================= -->
+            <VBox spacing="10" style="-fx-padding: 10 0;">
+                <Label text="Reviews"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" />
+                <VBox fx:id="reviewsContainer" spacing="10" />
+                <Separator />
+                <Label text="Add a review"
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #64748b;" />
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Rating:" />
+                    <ChoiceBox fx:id="ratingChoiceBox" />
+                </HBox>
+                <TextArea fx:id="reviewTextArea" promptText="Write your review here..."
+                          style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #e2e8f0; -fx-padding: 10; -fx-font-size: 14px;" />
+                <Button text="Submit Review" fx:id="submitReviewButton"
+                        style="-fx-background-color: #6366f1; -fx-text-fill: white; -fx-background-radius: 8; -fx-padding: 10 20; -fx-cursor: hand; -fx-font-size: 14px; -fx-font-weight: bold; -fx-effect: dropshadow(gaussian, rgba(99,102,241,0.3), 5, 0, 0, 2);" />
+            </VBox>
+</VBox>

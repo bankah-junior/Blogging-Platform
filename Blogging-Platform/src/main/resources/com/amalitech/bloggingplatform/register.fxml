@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane prefHeight="376.0" prefWidth="580.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amalitech.bloggingplatform.controller.RegisterController">
+   <children>
+      <ImageView fitHeight="380.0" fitWidth="611.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@auth-bg.jpg" />
+         </image>
+      </ImageView>
+      <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: rgba(0, 0, 0, 0.8);" />
+      <VBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" spacing="15" styleClass="register-container">
+      
+          <Label styleClass="register-title" text="Create Account" textFill="WHITE">
+            <font>
+               <Font size="20.0" />
+            </font></Label>
+      
+          <TextField fx:id="usernameField" promptText="Username" styleClass="input-field" />
+      
+          <TextField fx:id="emailField" promptText="Email" styleClass="input-field" />
+      
+          <PasswordField fx:id="passwordField" promptText="Password" styleClass="input-field" />
+
+          <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password" styleClass="input-field" />
+      
+          <Label fx:id="messageLabel" styleClass="message-label" textFill="RED" visible="false">
+              <font>
+                  <Font size="20.0" />
+              </font>
+          </Label>
+      
+          <Button onAction="#onRegisterButtonClick" prefHeight="30.0" prefWidth="235.0" styleClass="register-button" text="Register">
+              <font>
+                  <Font size="14.0" />
+              </font>
+          </Button>
+      
+          <Hyperlink fx:id="loginLink" onAction="#onLoginButtonClick" styleClass="link-label" text="Already have an account? Login" />
+         <padding>
+            <Insets left="70.0" right="70.0" />
+         </padding>
+      
+      </VBox>
+   </children>
+</StackPane>
