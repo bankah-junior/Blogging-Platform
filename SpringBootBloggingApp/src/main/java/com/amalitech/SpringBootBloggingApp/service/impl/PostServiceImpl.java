@@ -11,6 +11,8 @@ import com.amalitech.SpringBootBloggingApp.service.PostService;
 
 import com.amalitech.SpringBootBloggingApp.util.ValidationUtil;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "posts", allEntries = true)
     public Post create(CreatePostRequest request) {
         User author = userRepository.findById(request.getAuthorId()).orElseThrow(() -> new UserInputsException("Author not found"));
         Post post = new Post();
@@ -47,6 +50,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "posts", allEntries = true)
     public Post create(Post post) {
         if (!ValidationUtil.isValidTitle(post.getTitle())) {
             throw new UserInputsException("Invalid title");
@@ -59,6 +63,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "posts", allEntries = true)
     public Post update(Post post) {
         Post saved = postRepository.save(post);
         return saved;
@@ -66,6 +71,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "posts", allEntries = true)
     public boolean delete(String postId) {
         if (!ValidationUtil.isValidObjectId(postId)) {
             throw new UserInputsException("Invalid post ID");
@@ -76,6 +82,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "posts", key = "#postId")
     public Post getById(String postId) {
         if (!ValidationUtil.isValidObjectId(postId)) {
             throw new UserInputsException("Invalid post ID");

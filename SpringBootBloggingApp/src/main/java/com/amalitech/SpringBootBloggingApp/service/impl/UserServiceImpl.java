@@ -14,6 +14,8 @@ import com.amalitech.SpringBootBloggingApp.service.UserService;
 import com.amalitech.SpringBootBloggingApp.util.JwtUtil;
 import com.amalitech.SpringBootBloggingApp.util.ValidationUtil;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +38,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "users", allEntries = true)
     public UserResponse create(RegisterRequest user) {
         if (!ValidationUtil.isUsernameValid(user.getUsername())) {
             throw new UserInputsException("Username is not valid");
@@ -94,6 +97,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "users", allEntries = true)
     public UserResponse update(UpdateUserRequest user) {
         if (!ValidationUtil.isUsernameValid(user.getUsername())) {
             throw new UserInputsException("Username is not valid");
@@ -134,6 +138,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "users", allEntries = true)
     public boolean delete(String userId) {
         if (userRepository.findById(userId).isEmpty()) {
             throw new UserInputsException("User not found");
@@ -145,6 +150,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "users", key = "#userId")
     public UserResponse getById(String userId) {
         User foundUser = userCache.get(userId);
         if (foundUser == null) {
@@ -167,6 +173,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "users", key = "#email")
     public UserResponse getByEmail(String email) {
         User foundUser = userCache.get(email);
         if (foundUser == null) {
@@ -189,6 +196,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "users", key = "'all'")
     public List<UserResponse> getAll() {
         List<User> users = userRepository.findAll();
         return users.stream().map(user -> {
@@ -215,6 +223,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "users", allEntries = true)
     public boolean updateUserDetails(String userId, UpdateUserDetailRequest user) {
         if (!ValidationUtil.isValidObjectId(userId)) {
             throw new UserInputsException("User ID is not valid");
@@ -242,6 +251,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "users", allEntries = true)
     public boolean changePassword(String userId, String oldPassword, String newPassword) {
         if (!ValidationUtil.isValidObjectId(userId)) {
             throw new UserInputsException("User ID is not valid");
