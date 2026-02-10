@@ -3,20 +3,15 @@ package com.amalitech.SpringBootBloggingApp.cache;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-@Component
 public class LruCache<K, V> implements Cache<K, V> {
 
     private static final int CAPACITY = 10;
+    private static final long DEFAULT_TTL_MILLIS = 600000; // 10 minutes
 
     /**
-     * Default time-to-live for cache entries in milliseconds.
-     * Configurable via `app.cache.ttl-ms` in application configuration.
+     * Time-to-live for cache entries in milliseconds.
      */
-    @Value("${app.cache.ttl-ms:600000}")
-    private long ttlMillis;
+    private final long ttlMillis;
 
     private final Map<K, CacheEntry<V>> cache;
 
@@ -39,6 +34,7 @@ public class LruCache<K, V> implements Cache<K, V> {
     }
 
     public LruCache() {
+        this.ttlMillis = DEFAULT_TTL_MILLIS;
         this.cache = new LinkedHashMap<>(CAPACITY, 0.75f, true) {
             @Override
             protected boolean removeEldestEntry(Map.Entry<K, CacheEntry<V>> eldest) {
@@ -48,6 +44,17 @@ public class LruCache<K, V> implements Cache<K, V> {
     }
 
     public LruCache(int capacity) {
+        this.ttlMillis = DEFAULT_TTL_MILLIS;
+        this.cache = new LinkedHashMap<>(capacity, 0.75f, true) {
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<K, CacheEntry<V>> eldest) {
+                return size() > capacity;
+            }
+        };
+    }
+
+    public LruCache(int capacity, long ttlMillis) {
+        this.ttlMillis = ttlMillis;
         this.cache = new LinkedHashMap<>(capacity, 0.75f, true) {
             @Override
             protected boolean removeEldestEntry(Map.Entry<K, CacheEntry<V>> eldest) {

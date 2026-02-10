@@ -14,6 +14,7 @@ import com.amalitech.SpringBootBloggingApp.service.CommentService;
 import com.amalitech.SpringBootBloggingApp.util.ValidationUtil;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -73,6 +74,16 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public PageResponse<Comment> getByPostPaginated(String postId, int page, int size) {
+        if(!ValidationUtil.isValidObjectId(postId)) {
+            throw new UserInputsException("Invalid post ID");
+        }
+        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        var pageResult = commentRepository.findByPostId(postId, pageable);
+        return new PageResponse<>(pageResult.getContent(), page, size, pageResult.getTotalElements());
+    }
+
+    @Override
     public List<Comment> getByPost(Post post) {
         return List.of();
     }
@@ -83,6 +94,16 @@ public class CommentServiceImpl implements CommentService {
             throw new UserInputsException("Invalid user ID");
         }
         return commentRepository.findByUserId(userId);
+    }
+
+    @Override
+    public PageResponse<Comment> getByUserPaginated(String userId, int page, int size) {
+        if(!ValidationUtil.isValidObjectId(userId)) {
+            throw new UserInputsException("Invalid user ID");
+        }
+        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        var pageResult = commentRepository.findByUserId(userId, pageable);
+        return new PageResponse<>(pageResult.getContent(), page, size, pageResult.getTotalElements());
     }
 
     @Override
@@ -110,7 +131,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public PageResponse<Comment> getAllPaginated(int page, int size) {
         long total = commentRepository.count();
-        var pageable = PageRequest.of(page, size);
+        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         var pageResult = commentRepository.findAll(pageable);
         return new PageResponse<>(pageResult.getContent(), page, size, total);
     }

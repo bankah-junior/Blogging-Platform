@@ -14,6 +14,7 @@ import com.amalitech.SpringBootBloggingApp.service.ReviewService;
 import com.amalitech.SpringBootBloggingApp.util.ValidationUtil;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -99,13 +100,36 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public PageResponse<Review> getByPostPaginated(String postId, int page, int size) {
+        if (!ValidationUtil.isValidObjectId(postId)) {
+            throw new UserInputsException("Invalid post ID");
+        }
+        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        var pageResult = reviewRepository.findByPostId(postId, pageable);
+        return new PageResponse<>(pageResult.getContent(), page, size, pageResult.getTotalElements());
+    }
+
+    @Override
     public List<Review> getByPost(Post post) {
         return List.of();
     }
 
     @Override
     public List<Review> getByUser(String userId) {
-        return List.of();
+        if (!ValidationUtil.isValidObjectId(userId)) {
+            throw new UserInputsException("Invalid user ID");
+        }
+        return reviewRepository.findByUserId(userId);
+    }
+
+    @Override
+    public PageResponse<Review> getByUserPaginated(String userId, int page, int size) {
+        if (!ValidationUtil.isValidObjectId(userId)) {
+            throw new UserInputsException("Invalid user ID");
+        }
+        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        var pageResult = reviewRepository.findByUserId(userId, pageable);
+        return new PageResponse<>(pageResult.getContent(), page, size, pageResult.getTotalElements());
     }
 
     @Override
@@ -135,7 +159,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public PageResponse<Review> getAllPaginated(int page, int size) {
         long total = reviewRepository.count();
-        var pageable = PageRequest.of(page, size);
+        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         var pageResult = reviewRepository.findAll(pageable);
         return new PageResponse<>(pageResult.getContent(), page, size, total);
     }

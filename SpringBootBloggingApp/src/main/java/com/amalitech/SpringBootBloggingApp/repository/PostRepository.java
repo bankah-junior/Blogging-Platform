@@ -31,13 +31,21 @@ public interface PostRepository extends MongoRepository<Post, String> {
     
     Page<Post> findByAuthor(User author, Pageable pageable);
     
+    Page<Post> findByAuthorId(String authorId, Pageable pageable);
+    
     // Custom query with regex for flexible title search
     @Query("{ 'title': { $regex: ?0, $options: 'i' } }")
     List<Post> searchByTitle(String keyword);
     
+    @Query("{ 'title': { $regex: ?0, $options: 'i' } }")
+    Page<Post> searchByTitle(String keyword, Pageable pageable);
+    
     // Custom query to find posts by tag name
     @Query(value = "{ '_id': { $in: ?0 } }")
     List<Post> findByPostIds(List<String> postIds);
+    
+    @Query(value = "{ '_id': { $in: ?0 } }")
+    Page<Post> findByPostIds(List<String> postIds, Pageable pageable);
     
     // Count posts by author
     long countByAuthor(User author);

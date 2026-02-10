@@ -19,9 +19,15 @@ public interface ReviewService {
     boolean update(Review review);
 
     List<Review> getByPost(String postId);
+    
+    PageResponse<Review> getByPostPaginated(String postId, int page, int size);
+    
     List<Review> getByPost(com.amalitech.SpringBootBloggingApp.model.entity.Post post);
     
     List<Review> getByUser(String userId);
+    
+    PageResponse<Review> getByUserPaginated(String userId, int page, int size);
+    
     List<Review> getByUser(com.amalitech.SpringBootBloggingApp.model.entity.User user);
 
     double getAverageRatingForPost(String postId);
