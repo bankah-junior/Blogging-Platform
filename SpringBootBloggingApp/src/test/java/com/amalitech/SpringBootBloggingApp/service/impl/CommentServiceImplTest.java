@@ -4,7 +4,6 @@ import com.amalitech.SpringBootBloggingApp.cache.Cache;
 import com.amalitech.SpringBootBloggingApp.model.entity.Comment;
 import com.amalitech.SpringBootBloggingApp.model.entity.Post;
 import com.amalitech.SpringBootBloggingApp.model.entity.User;
-import com.amalitech.SpringBootBloggingApp.repository.impl.CommentRepositoryImpl;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

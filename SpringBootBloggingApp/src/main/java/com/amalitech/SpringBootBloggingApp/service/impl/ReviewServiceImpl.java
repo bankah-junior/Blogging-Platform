@@ -6,25 +6,26 @@ import com.amalitech.SpringBootBloggingApp.model.dto.response.PageResponse;
 import com.amalitech.SpringBootBloggingApp.model.entity.Post;
 import com.amalitech.SpringBootBloggingApp.model.entity.Review;
 import com.amalitech.SpringBootBloggingApp.model.entity.User;
-import com.amalitech.SpringBootBloggingApp.repository.impl.PostRepositoryImpl;
-import com.amalitech.SpringBootBloggingApp.repository.impl.ReviewRepositoryImpl;
-import com.amalitech.SpringBootBloggingApp.repository.impl.UserRepositoryImpl;
+import com.amalitech.SpringBootBloggingApp.repository.PostRepository;
+import com.amalitech.SpringBootBloggingApp.repository.ReviewRepository;
+import com.amalitech.SpringBootBloggingApp.repository.UserRepository;
 import com.amalitech.SpringBootBloggingApp.service.ReviewService;
 
 import com.amalitech.SpringBootBloggingApp.util.ValidationUtil;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
-    private final ReviewRepositoryImpl reviewRepository;
-    private final UserRepositoryImpl userRepository;
-    private final PostRepositoryImpl postRepository;
+    private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository;
+    private final PostRepository postRepository;
     private final Cache<String, User> userCache;
 
-    public ReviewServiceImpl(ReviewRepositoryImpl reviewRepository, UserRepositoryImpl userRepository, PostRepositoryImpl postRepository, Cache<String, User> userCache) {
+    public ReviewServiceImpl(ReviewRepository reviewRepository, UserRepository userRepository, PostRepository postRepository, Cache<String, User> userCache) {
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.postRepository = postRepository;
@@ -76,7 +77,8 @@ public class ReviewServiceImpl implements ReviewService {
         if (!ValidationUtil.isValidObjectId(reviewId)) {
             throw new UserInputsException("Invalid review ID");
         }
-        return reviewRepository.deleteById(reviewId);
+        reviewRepository.deleteById(reviewId);
+        return true;
     }
 
     @Override
@@ -84,7 +86,8 @@ public class ReviewServiceImpl implements ReviewService {
         if (!ValidationUtil.isValidObjectId(review.getId())) {
             throw new UserInputsException("Invalid review ID");
         }
-        return reviewRepository.update(review);
+        reviewRepository.save(review);
+        return true;
     }
 
     @Override
@@ -115,7 +118,8 @@ public class ReviewServiceImpl implements ReviewService {
         if (!ValidationUtil.isValidObjectId(postId)) {
             throw new UserInputsException("Invalid post ID");
         }
-        return reviewRepository.calculateAverageRating(postId);
+        Double avgRating = reviewRepository.calculateAverageRatingByPostId(postId);
+        return avgRating != null ? avgRating : 0.0;
     }
 
     @Override
@@ -131,8 +135,8 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public PageResponse<Review> getAllPaginated(int page, int size) {
         long total = reviewRepository.count();
-        int skip = page * size;
-        var content = reviewRepository.findAll(skip, size);
-        return new PageResponse<>(content, page, size, total);
+        var pageable = PageRequest.of(page, size);
+        var pageResult = reviewRepository.findAll(pageable);
+        return new PageResponse<>(pageResult.getContent(), page, size, total);
     }
 }
