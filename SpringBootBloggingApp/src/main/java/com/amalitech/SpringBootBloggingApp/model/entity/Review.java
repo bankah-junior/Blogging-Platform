@@ -6,13 +6,26 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "reviews")
-@CompoundIndex(name = "post_user_idx", def = "{'post': 1, 'user': 1}")
+@CompoundIndexes({
+    // Optimize: Get reviews by post sorted by date
+    @CompoundIndex(name = "post_created_idx", def = "{'post': 1, 'createdAt': -1}"),
+    
+    // Optimize: Get reviews by rating for a post
+    @CompoundIndex(name = "post_rating_idx", def = "{'post': 1, 'rating': -1}"),
+    
+    // Optimize: Prevent duplicate reviews (one review per user per post)
+    @CompoundIndex(name = "post_user_unique_idx", def = "{'post': 1, 'user': 1}", unique = true),
+    
+    // Optimize: Get user's reviews sorted by date
+    @CompoundIndex(name = "user_created_idx", def = "{'user': 1, 'createdAt': -1}")
+})
 public class Review {
 
     @Id
