@@ -47,45 +47,66 @@ public class PostController {
     }
 
     /**
-     * Get all posts sorted by date
+     * Get all posts sorted by date (with pagination)
      *
      * @param ascending whether to sort in ascending order
-     * @return the sorted posts
+     * @param page page number (default: 0)
+     * @param size page size (default: 20)
+     * @return the paginated sorted posts
      */
     @GetMapping("/sort/date")
-    @Operation(summary = "Get all posts sorted by date", description = "Retrieves all posts sorted by date")
+    @Operation(summary = "Get all posts sorted by date", description = "Retrieves paginated posts sorted by date")
     @Tag(name = "Post")
-    public ResponseEntity<ApiResponse<List<PostResponse>>> getAllSortedByDate(@RequestParam boolean ascending) {
-        List<Post> sortedPosts = postService.sortByDate(postService.getAll(), ascending);
-        return ResponseEntity.ok(ApiResponse.success(DtoMapper.toPostResponses(sortedPosts)));
+    public ResponseEntity<ApiResponse<PageResponse<PostResponse>>> getAllSortedByDate(
+            @RequestParam boolean ascending,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        PageResponse<Post> pr = postService.getAllSortedPaginated("date", ascending, page, size);
+        PageResponse<PostResponse> dto = new PageResponse<>(
+                DtoMapper.toPostResponses(pr.getContent()), pr.getPage(), pr.getSize(), pr.getTotalElements());
+        return ResponseEntity.ok(ApiResponse.success(dto));
     }
 
     /**
-     * Get all posts sorted by title
+     * Get all posts sorted by title (with pagination)
      *
      * @param ascending whether to sort in ascending order
-     * @return the sorted posts
+     * @param page page number (default: 0)
+     * @param size page size (default: 20)
+     * @return the paginated sorted posts
      */
     @GetMapping("/sort/title")
-    @Operation(summary = "Get all posts sorted by title", description = "Retrieves all posts sorted by title")
+    @Operation(summary = "Get all posts sorted by title", description = "Retrieves paginated posts sorted by title")
     @Tag(name = "Post")
-    public ResponseEntity<ApiResponse<List<PostResponse>>> getAllSortedByTitle(@RequestParam boolean ascending) {
-        List<Post> sortedPosts = postService.sortByTitle(postService.getAll(), ascending);
-        return ResponseEntity.ok(ApiResponse.success(DtoMapper.toPostResponses(sortedPosts)));
+    public ResponseEntity<ApiResponse<PageResponse<PostResponse>>> getAllSortedByTitle(
+            @RequestParam boolean ascending,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        PageResponse<Post> pr = postService.getAllSortedPaginated("title", ascending, page, size);
+        PageResponse<PostResponse> dto = new PageResponse<>(
+                DtoMapper.toPostResponses(pr.getContent()), pr.getPage(), pr.getSize(), pr.getTotalElements());
+        return ResponseEntity.ok(ApiResponse.success(dto));
     }
 
     /**
-     * Get all sorted posts
+     * Get all sorted posts (with pagination)
      *
      * @param ascending whether to sort in ascending order
-     * @return the sorted posts
+     * @param page page number (default: 0)
+     * @param size page size (default: 20)
+     * @return the paginated sorted posts
      */
     @GetMapping("/sort/all")
-    @Operation(summary = "Get all sorted posts", description = "Retrieves all posts sorted by date and title")
+    @Operation(summary = "Get all sorted posts", description = "Retrieves paginated posts sorted by date and title")
     @Tag(name = "Post")
-    public ResponseEntity<ApiResponse<List<PostResponse>>> getAllSorted(@RequestParam boolean ascending) {
-        List<Post> sortedPosts = postService.getAllSorted("date", ascending);
-        return ResponseEntity.ok(ApiResponse.success(DtoMapper.toPostResponses(sortedPosts)));
+    public ResponseEntity<ApiResponse<PageResponse<PostResponse>>> getAllSorted(
+            @RequestParam boolean ascending,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        PageResponse<Post> pr = postService.getAllSortedPaginated("date", ascending, page, size);
+        PageResponse<PostResponse> dto = new PageResponse<>(
+                DtoMapper.toPostResponses(pr.getContent()), pr.getPage(), pr.getSize(), pr.getTotalElements());
+        return ResponseEntity.ok(ApiResponse.success(dto));
     }
 
     /**
@@ -150,11 +171,16 @@ public class PostController {
     }
 
     @GetMapping("/author/{authorId}")
-    @Operation(summary = "Get posts by author ID", description = "Retrieves all posts by a specific author")
+    @Operation(summary = "Get posts by author ID", description = "Retrieves posts by a specific author with optional pagination")
     @Tag(name = "Post")
-    public ResponseEntity<ApiResponse<List<PostResponse>>> getPostsByAuthorId(@PathVariable String authorId) {
-        List<Post> posts = postService.getByAuthor(authorId);
-        return ResponseEntity.ok(ApiResponse.success(DtoMapper.toPostResponses(posts)));
+    public ResponseEntity<ApiResponse<?>> getPostsByAuthorId(
+            @PathVariable String authorId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        PageResponse<Post> pr = postService.getByAuthorPaginated(authorId, page, size);
+        PageResponse<PostResponse> dto = new PageResponse<>(
+                DtoMapper.toPostResponses(pr.getContent()), pr.getPage(), pr.getSize(), pr.getTotalElements());
+        return ResponseEntity.ok(ApiResponse.success(dto));
     }
 
     @GetMapping("/search/title/{keyword}")
@@ -174,10 +200,15 @@ public class PostController {
     }
 
     @GetMapping("/published/{published}")
-    @Operation(summary = "Get posts by published status", description = "Retrieves posts by published status")
+    @Operation(summary = "Get posts by published status", description = "Retrieves posts by published status with optional pagination")
     @Tag(name = "Post")
-    public ResponseEntity<ApiResponse<List<PostResponse>>> getPostsByPublished(@PathVariable boolean published) {
-        List<Post> posts = postService.getByPublished(published);
-        return ResponseEntity.ok(ApiResponse.success(DtoMapper.toPostResponses(posts)));
+    public ResponseEntity<ApiResponse<?>> getPostsByPublished(
+            @PathVariable boolean published,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        PageResponse<Post> pr = postService.getByPublishedPaginated(published, page, size);
+        PageResponse<PostResponse> dto = new PageResponse<>(
+                DtoMapper.toPostResponses(pr.getContent()), pr.getPage(), pr.getSize(), pr.getTotalElements());
+        return ResponseEntity.ok(ApiResponse.success(dto));
     }
 }

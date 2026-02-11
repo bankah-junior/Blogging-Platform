@@ -33,6 +33,8 @@ public interface ReviewRepository extends MongoRepository<Review, String> {
     
     Page<Review> findByPostId(String postId, Pageable pageable);
     
+    Page<Review> findByUserId(String userId, Pageable pageable);
+    
     // Count methods
     long countByPost(Post post);
     

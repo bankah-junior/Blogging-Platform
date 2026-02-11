@@ -28,6 +28,10 @@ public interface CommentRepository extends MongoRepository<Comment, String> {
     
     Page<Comment> findByPost(Post post, Pageable pageable);
     
+    Page<Comment> findByUserId(String userId, Pageable pageable);
+    
+    Page<Comment> findByUser(User user, Pageable pageable);
+    
     // Count methods for statistics
     long countByPost(Post post);
     

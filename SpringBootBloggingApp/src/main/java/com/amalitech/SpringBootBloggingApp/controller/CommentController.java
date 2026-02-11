@@ -70,19 +70,29 @@ public class CommentController {
     }
 
     @GetMapping("/user/{userId}")
-    @Operation(summary = "Find comments by user id", description = "Retrieves all comments for a user")
+    @Operation(summary = "Find comments by user id", description = "Retrieves comments for a user with optional pagination")
     @Tag(name = "Comment")
-    public ResponseEntity<ApiResponse<List<CommentResponse>>> findByUserId(@PathVariable String userId) {
-        List<Comment> comments = commentService.getByUser(userId);
-        return ResponseEntity.ok(ApiResponse.success(DtoMapper.toCommentResponses(comments)));
+    public ResponseEntity<ApiResponse<?>> findByUserId(
+            @PathVariable String userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        PageResponse<Comment> pr = commentService.getByUserPaginated(userId, page, size);
+        PageResponse<CommentResponse> dto = new PageResponse<>(
+                DtoMapper.toCommentResponses(pr.getContent()), pr.getPage(), pr.getSize(), pr.getTotalElements());
+        return ResponseEntity.ok(ApiResponse.success(dto));
     }
 
     @GetMapping("/post/{postId}")
-    @Operation(summary = "Find comments by post id", description = "Retrieves all comments for a post")
+    @Operation(summary = "Find comments by post id", description = "Retrieves comments for a post with optional pagination")
     @Tag(name = "Comment")
-    public ResponseEntity<ApiResponse<List<CommentResponse>>> findByPostId(@PathVariable String postId) {
-        List<Comment> comments = commentService.getByPost(postId);
-        return ResponseEntity.ok(ApiResponse.success(DtoMapper.toCommentResponses(comments)));
+    public ResponseEntity<ApiResponse<?>> findByPostId(
+            @PathVariable String postId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        PageResponse<Comment> pr = commentService.getByPostPaginated(postId, page, size);
+        PageResponse<CommentResponse> dto = new PageResponse<>(
+                DtoMapper.toCommentResponses(pr.getContent()), pr.getPage(), pr.getSize(), pr.getTotalElements());
+        return ResponseEntity.ok(ApiResponse.success(dto));
     }
 
     @PutMapping("/update")

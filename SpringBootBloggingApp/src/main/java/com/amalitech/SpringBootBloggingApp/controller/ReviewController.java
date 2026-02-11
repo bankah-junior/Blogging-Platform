@@ -63,19 +63,27 @@ public class ReviewController {
     }
 
     @GetMapping
-    @Operation(summary = "Get all reviews", description = "Retrieves a list of all reviews")
+    @Operation(summary = "Get all reviews", description = "Retrieves reviews with optional pagination (page, size)")
     @Tag(name = "Review")
-    public ResponseEntity<ApiResponse<List<ReviewResponse>>> getAll() {
-        List<Review> reviews = reviewService.getAll();
-        return ResponseEntity.ok(ApiResponse.success(DtoMapper.toReviewResponses(reviews)));
+    public ResponseEntity<ApiResponse<PageResponse<ReviewResponse>>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        var pr = reviewService.getAllPaginated(page, size);
+        var dto = new PageResponse<>(DtoMapper.toReviewResponses(pr.getContent()), pr.getPage(), pr.getSize(), pr.getTotalElements());
+        return ResponseEntity.ok(ApiResponse.success(dto));
     }
 
     @GetMapping("/post/{postId}")
-    @Operation(summary = "Get reviews by post ID", description = "Retrieves a list of reviews for a specific post")
+    @Operation(summary = "Get reviews by post ID", description = "Retrieves reviews for a specific post with optional pagination")
     @Tag(name = "Review")
-    public ResponseEntity<ApiResponse<List<ReviewResponse>>> getByPost(@PathVariable String postId) {
-        List<Review> reviews = reviewService.getByPost(postId);
-        return ResponseEntity.ok(ApiResponse.success(DtoMapper.toReviewResponses(reviews)));
+    public ResponseEntity<ApiResponse<?>> getByPost(
+            @PathVariable String postId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        PageResponse<Review> pr = reviewService.getByPostPaginated(postId, page, size);
+        PageResponse<ReviewResponse> dto = new PageResponse<>(
+                DtoMapper.toReviewResponses(pr.getContent()), pr.getPage(), pr.getSize(), pr.getTotalElements());
+        return ResponseEntity.ok(ApiResponse.success(dto));
     }
 
     @GetMapping("/post/{postId}/average-rating")

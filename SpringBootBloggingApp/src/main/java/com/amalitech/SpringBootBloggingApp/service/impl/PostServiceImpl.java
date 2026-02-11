@@ -12,6 +12,7 @@ import com.amalitech.SpringBootBloggingApp.service.PostService;
 import com.amalitech.SpringBootBloggingApp.util.ValidationUtil;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -103,10 +104,27 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public PageResponse<Post> getByAuthorPaginated(String authorId, int page, int size) {
+        if (!ValidationUtil.isValidObjectId(authorId)) {
+            throw new UserInputsException("Invalid author ID");
+        }
+        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        var pageResult = postRepository.findByAuthorId(authorId, pageable);
+        return new PageResponse<>(pageResult.getContent(), page, size, pageResult.getTotalElements());
+    }
+
+    @Override
     public List<Post> searchByTag(String tagName) {
         // This method requires joining through PostTag
         // For now, return empty list - will be implemented with proper aggregation
         return List.of();
+    }
+
+    @Override
+    public PageResponse<Post> searchByTagPaginated(String tagName, int page, int size) {
+        // This method requires joining through PostTag
+        // For now, return empty page - will be implemented with proper aggregation
+        return new PageResponse<>(List.of(), page, size, 0L);
     }
 
     @Override
@@ -144,11 +162,27 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public PageResponse<Post> getByPublishedPaginated(boolean published, int page, int size) {
+        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        var pageResult = postRepository.findByPublished(published, pageable);
+        return new PageResponse<>(pageResult.getContent(), page, size, pageResult.getTotalElements());
+    }
+
+    @Override
     public List<Post> getAllSorted(String sortBy, boolean ascending) {
         return switch (sortBy.toLowerCase()) {
             case "date" -> sortByDate(getAll(), ascending);
             case "title" -> sortByTitle(getAll(), ascending);
             default -> getAll();
         };
+    }
+
+    @Override
+    public PageResponse<Post> getAllSortedPaginated(String sortBy, boolean ascending, int page, int size) {
+        Sort.Direction direction = ascending ? Sort.Direction.ASC : Sort.Direction.DESC;
+        String sortField = sortBy.equalsIgnoreCase("date") ? "createdAt" : "title";
+        var pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+        var pageResult = postRepository.findAll(pageable);
+        return new PageResponse<>(pageResult.getContent(), page, size, pageResult.getTotalElements());
     }
 }
