@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 class PostServiceImplTest {
 
     @Mock
-    private PostRepositoryImpl postRepository;
+    private PostRepository postRepository;
 
     @Mock
     private Cache<String, User> userCache;
