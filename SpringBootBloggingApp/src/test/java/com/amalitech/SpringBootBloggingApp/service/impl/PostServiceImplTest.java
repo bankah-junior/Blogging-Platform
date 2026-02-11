@@ -3,6 +3,7 @@ package com.amalitech.SpringBootBloggingApp.service.impl;
 import com.amalitech.SpringBootBloggingApp.cache.Cache;
 import com.amalitech.SpringBootBloggingApp.model.entity.Post;
 import com.amalitech.SpringBootBloggingApp.model.entity.User;
+import com.amalitech.SpringBootBloggingApp.repository.PostRepository;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -84,7 +85,7 @@ class PostServiceImplTest {
     @Test
     @DisplayName("Update Valid Post Returns Post")
     void update_ValidPost_ReturnsPost() {
-        when(postRepository.update(testPost)).thenReturn(true);
+        when(postRepository.save(testPost)).thenReturn(true);
 
         Post result = postService.update(testPost);
 

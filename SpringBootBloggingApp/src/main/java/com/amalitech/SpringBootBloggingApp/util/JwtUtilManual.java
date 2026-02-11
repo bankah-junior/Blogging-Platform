@@ -11,7 +11,7 @@ import java.security.Key;
 import java.util.Date;
 
 @Component
-public class JwtUtil {
+public class JwtUtilManual {
 
     private static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private static final long expiration = 1000 * 60 * 60; // 1 hour

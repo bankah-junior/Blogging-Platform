@@ -1,6 +1,5 @@
 package com.amalitech.SpringBootBloggingApp.controller.graphql;
 
-import com.amalitech.SpringBootBloggingApp.model.dto.DtoMapper;
 import com.amalitech.SpringBootBloggingApp.model.dto.request.*;
 import com.amalitech.SpringBootBloggingApp.model.dto.response.UserResponse;
 import com.amalitech.SpringBootBloggingApp.model.entity.Comment;
@@ -13,7 +12,7 @@ import com.amalitech.SpringBootBloggingApp.service.PostService;
 import com.amalitech.SpringBootBloggingApp.service.ReviewService;
 import com.amalitech.SpringBootBloggingApp.service.TagService;
 import com.amalitech.SpringBootBloggingApp.service.UserService;
-import com.amalitech.SpringBootBloggingApp.util.JwtUtil;
+import com.amalitech.SpringBootBloggingApp.util.JwtUtilManual;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.stereotype.Controller;
@@ -144,7 +143,7 @@ public class MutationResolver {
         );
 
         UserResponse updatedUser = userService.update(user);
-        String token = JwtUtil.generateToken(updatedUser.getId(), updatedUser.getEmail());
+        String token = JwtUtilManual.generateToken(updatedUser.getId(), updatedUser.getEmail());
         return new UserResponse(
                 updatedUser.getId(),
                 updatedUser.getUsername(),

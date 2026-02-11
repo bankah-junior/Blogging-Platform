@@ -11,7 +11,7 @@ import com.amalitech.SpringBootBloggingApp.model.entity.User;
 import com.amalitech.SpringBootBloggingApp.repository.UserRepository;
 import com.amalitech.SpringBootBloggingApp.service.UserService;
 
-import com.amalitech.SpringBootBloggingApp.util.JwtUtil;
+import com.amalitech.SpringBootBloggingApp.util.JwtUtilManual;
 import com.amalitech.SpringBootBloggingApp.util.ValidationUtil;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
 import org.springframework.cache.annotation.CacheEvict;
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
         if (saved != null) {
             userCache.put(saved.getId(), saved);
         }
-        String token = JwtUtil.generateToken(saved.getId(), user.getEmail());
+        String token = JwtUtilManual.generateToken(saved.getId(), user.getEmail());
         return new UserResponse(
                 saved.getId(),
                 saved.getUsername(),
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
             if (!verifyPassword(user.getPassword(), loggedIn.getPasswordHash())) {
                 throw new UserInputsException("Password is not valid");
             }
-            String token = JwtUtil.generateToken(loggedIn.getId(), loggedIn.getEmail());
+            String token = JwtUtilManual.generateToken(loggedIn.getId(), loggedIn.getEmail());
             return new UserResponse(
                     loggedIn.getId(),
                     loggedIn.getUsername(),
@@ -123,7 +123,7 @@ public class UserServiceImpl implements UserService {
         User saved = userRepository.save(updateUser);
         if (saved != null) {
             userCache.put(saved.getId(), saved);
-            String token = JwtUtil.generateToken(saved.getId(), saved.getEmail());
+            String token = JwtUtilManual.generateToken(saved.getId(), saved.getEmail());
             return new UserResponse(
                     saved.getId(),
                     saved.getUsername(),
@@ -160,7 +160,7 @@ public class UserServiceImpl implements UserService {
             }
             userCache.put(foundUser.getId(), foundUser);
         }
-        String token = JwtUtil.generateToken(foundUser.getId(), foundUser.getEmail());
+        String token = JwtUtilManual.generateToken(foundUser.getId(), foundUser.getEmail());
         return new UserResponse(
                 foundUser.getId(),
                 foundUser.getUsername(),
@@ -183,7 +183,7 @@ public class UserServiceImpl implements UserService {
             }
             userCache.put(foundUser.getEmail(), foundUser);
         }
-        String token = JwtUtil.generateToken(foundUser.getId(), foundUser.getEmail());
+        String token = JwtUtilManual.generateToken(foundUser.getId(), foundUser.getEmail());
         return new UserResponse(
                 foundUser.getId(),
                 foundUser.getUsername(),
@@ -200,7 +200,7 @@ public class UserServiceImpl implements UserService {
     public List<UserResponse> getAll() {
         List<User> users = userRepository.findAll();
         return users.stream().map(user -> {
-            String token = JwtUtil.generateToken(user.getId(), user.getEmail());
+            String token = JwtUtilManual.generateToken(user.getId(), user.getEmail());
             return new UserResponse(
                     user.getId(),
                     user.getUsername(),
@@ -286,7 +286,7 @@ public class UserServiceImpl implements UserService {
         if (foundUser == null) {
             throw new UserInputsException("User not found");
         }
-        String token = JwtUtil.generateToken(foundUser.getId(), foundUser.getEmail());
+        String token = JwtUtilManual.generateToken(foundUser.getId(), foundUser.getEmail());
         return new UserResponse(
                 foundUser.getId(),
                 foundUser.getUsername(),
