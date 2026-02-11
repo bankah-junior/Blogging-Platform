@@ -31,13 +31,16 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
 
     public SecurityConfig(CustomUserDetailsService userDetailsService,
                           JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-                          JwtAuthenticationFilter jwtAuthenticationFilter) {
+                          JwtAuthenticationFilter jwtAuthenticationFilter,
+                          OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler) {
         this.userDetailsService = userDetailsService;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.oauth2AuthenticationSuccessHandler = oauth2AuthenticationSuccessHandler;
     }
 
     @Bean
@@ -50,6 +53,8 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**", "/api/public/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/graphql").permitAll()
+                        // OAuth2 endpoints
+                        .requestMatchers("/oauth2/**", "/login/oauth2/**", "/login**", "/error**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/posts/**", "/api/tags/**").permitAll()
                         // Protected endpoints - will be secured with @PreAuthorize in controllers
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
@@ -61,6 +66,9 @@ public class SecurityConfig {
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(oauth2AuthenticationSuccessHandler)
                 )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
