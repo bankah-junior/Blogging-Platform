@@ -16,6 +16,7 @@ import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public Review create(CreateReviewRequest request) {
         User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new UserInputsException("User not found"));
         Post post = postRepository.findById(request.getPostId()).orElseThrow(() -> new UserInputsException("Post not found"));
@@ -49,6 +51,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public Review create(Review review) {
         if (!ValidationUtil.isValidObjectId(review.getUser().getId())) {
             throw new UserInputsException("Invalid user ID");
@@ -66,6 +69,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Review getById(String reviewId) {
         if (!ValidationUtil.isValidObjectId(reviewId)) {
             throw new UserInputsException("Invalid review ID");
@@ -74,6 +78,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public boolean delete(String reviewId) {
         if (!ValidationUtil.isValidObjectId(reviewId)) {
             throw new UserInputsException("Invalid review ID");
@@ -83,6 +88,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public boolean update(Review review) {
         if (!ValidationUtil.isValidObjectId(review.getId())) {
             throw new UserInputsException("Invalid review ID");
@@ -92,6 +98,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Review> getByPost(String postId) {
         if (!ValidationUtil.isValidObjectId(postId)) {
             throw new UserInputsException("Invalid post ID");
@@ -100,6 +107,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PageResponse<Review> getByPostPaginated(String postId, int page, int size) {
         if (!ValidationUtil.isValidObjectId(postId)) {
             throw new UserInputsException("Invalid post ID");
@@ -110,11 +118,13 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Review> getByPost(Post post) {
         return List.of();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Review> getByUser(String userId) {
         if (!ValidationUtil.isValidObjectId(userId)) {
             throw new UserInputsException("Invalid user ID");
@@ -123,6 +133,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PageResponse<Review> getByUserPaginated(String userId, int page, int size) {
         if (!ValidationUtil.isValidObjectId(userId)) {
             throw new UserInputsException("Invalid user ID");
@@ -133,11 +144,13 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Review> getByUser(User user) {
         return List.of();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public double getAverageRatingForPost(String postId) {
         if (!ValidationUtil.isValidObjectId(postId)) {
             throw new UserInputsException("Invalid post ID");
@@ -147,16 +160,19 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public double getAverageRatingForPost(Post post) {
         return 0;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Review> getAll() {
         return reviewRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PageResponse<Review> getAllPaginated(int page, int size) {
         long total = reviewRepository.count();
         var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));

@@ -16,6 +16,7 @@ import com.amalitech.SpringBootBloggingApp.util.ValidationUtil;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserResponse create(RegisterRequest user) {
         if (!ValidationUtil.isUsernameValid(user.getUsername())) {
             throw new UserInputsException("Username is not valid");
@@ -69,6 +71,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserResponse login(LoginRequest user) {
         if (userRepository.findByEmail(user.getEmail()).isEmpty()){
             throw new UserInputsException("Email not found");
@@ -90,6 +93,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserResponse update(UpdateUserRequest user) {
         if (!ValidationUtil.isUsernameValid(user.getUsername())) {
             throw new UserInputsException("Username is not valid");
@@ -129,6 +133,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public boolean delete(String userId) {
         if (userRepository.findById(userId).isEmpty()) {
             throw new UserInputsException("User not found");
@@ -139,6 +144,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserResponse getById(String userId) {
         User foundUser = userCache.get(userId);
         if (foundUser == null) {
@@ -160,6 +166,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserResponse getByEmail(String email) {
         User foundUser = userCache.get(email);
         if (foundUser == null) {
@@ -181,6 +188,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserResponse> getAll() {
         List<User> users = userRepository.findAll();
         return users.stream().map(user -> {
@@ -197,6 +205,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PageResponse<User> getAllPaginated(int page, int size) {
         long total = userRepository.count();
         var pageable = PageRequest.of(page, size);
@@ -205,6 +214,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public boolean updateUserDetails(String userId, UpdateUserDetailRequest user) {
         if (!ValidationUtil.isValidObjectId(userId)) {
             throw new UserInputsException("User ID is not valid");
@@ -231,6 +241,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public boolean changePassword(String userId, String oldPassword, String newPassword) {
         if (!ValidationUtil.isValidObjectId(userId)) {
             throw new UserInputsException("User ID is not valid");

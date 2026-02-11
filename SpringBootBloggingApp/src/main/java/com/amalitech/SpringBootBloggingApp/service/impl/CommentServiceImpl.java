@@ -16,6 +16,7 @@ import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +36,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public Comment create(CreateCommentRequest request) {
         User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new UserInputsException("User not found"));
         Post post = postRepository.findById(request.getPostId()).orElseThrow(() -> new UserInputsException("Post not found"));
@@ -49,6 +51,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public Comment create(Comment comment) {
         if(!ValidationUtil.isValidComment(comment.getContent())) {
             throw new UserInputsException("Invalid comment");
@@ -57,6 +60,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public boolean delete(String commentId) {
         if(!ValidationUtil.isValidObjectId(commentId)) {
             throw new UserInputsException("Invalid comment ID");
@@ -66,6 +70,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Comment> getByPost(String postId) {
         if(!ValidationUtil.isValidObjectId(postId)) {
             throw new UserInputsException("Invalid post ID");
@@ -74,6 +79,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PageResponse<Comment> getByPostPaginated(String postId, int page, int size) {
         if(!ValidationUtil.isValidObjectId(postId)) {
             throw new UserInputsException("Invalid post ID");
@@ -84,11 +90,13 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Comment> getByPost(Post post) {
         return List.of();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Comment> getByUser(String userId) {
         if(!ValidationUtil.isValidObjectId(userId)) {
             throw new UserInputsException("Invalid user ID");
@@ -97,6 +105,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PageResponse<Comment> getByUserPaginated(String userId, int page, int size) {
         if(!ValidationUtil.isValidObjectId(userId)) {
             throw new UserInputsException("Invalid user ID");
@@ -107,11 +116,13 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Comment> getByUser(User user) {
         return List.of();
     }
 
     @Override
+    @Transactional
     public boolean update(Comment comment) {
         if(!ValidationUtil.isValidObjectId(comment.getId())) {
             throw new UserInputsException("Invalid comment ID");
@@ -124,11 +135,13 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Comment> getAll() {
         return commentRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PageResponse<Comment> getAllPaginated(int page, int size) {
         long total = commentRepository.count();
         var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
@@ -137,6 +150,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Comment findById(String commentId) {
         if(!ValidationUtil.isValidObjectId(commentId)) {
             throw new UserInputsException("Invalid comment ID");

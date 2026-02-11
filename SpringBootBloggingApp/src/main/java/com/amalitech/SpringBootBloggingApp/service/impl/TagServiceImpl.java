@@ -13,6 +13,7 @@ import com.amalitech.SpringBootBloggingApp.util.ValidationUtil;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +31,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional
     public Tag create(CreateTagRequest request) {
         if (!ValidationUtil.isValidTagName(request.getName())) {
             throw new UserInputsException("Tag name is not valid");
@@ -40,6 +42,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional
     public Tag create(Tag tag) {
         if (!ValidationUtil.isValidTagName(tag.getName())) {
             throw new UserInputsException("Tag name is not valid");
@@ -47,7 +50,17 @@ public class TagServiceImpl implements TagService {
         return tagRepository.save(tag);
     }
 
+    @Transactional(readOnly = true)
     @Override
+    public Tag getById(String tagId) {
+        if (!ValidationUtil.isValidObjectId(tagId)) {
+            throw new UserInputsException("Tag ID is not valid");
+        }
+        return tagRepository.findById(tagId).orElse(null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Tag getByName(String name) {
         if (!ValidationUtil.isValidTagName(name)) {
             throw new UserInputsException("Tag name is not valid");
@@ -56,11 +69,13 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Tag> getAll() {
         return tagRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PageResponse<Tag> getAllPaginated(int page, int size) {
         long total = tagRepository.count();
         var pageable = PageRequest.of(page, size);
@@ -69,6 +84,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional
     public void assignTagToPost(String postId, String tagId) {
         if (!ValidationUtil.isValidObjectId(postId)) {
             throw new UserInputsException("Post ID is not valid");
@@ -85,6 +101,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Tag> getTagsByPost(String postId) {
         if (!ValidationUtil.isValidObjectId(postId)) {
             throw new UserInputsException("Post ID is not valid");
@@ -97,6 +114,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional
     public void unassignAllTagsFromPost(String postId) {
         if (!ValidationUtil.isValidObjectId(postId)) {
             throw new UserInputsException("Post ID is not valid");
@@ -105,6 +123,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    @Transactional
     public void unassignTagFromPost(String postId, String tagId) {
         if (!ValidationUtil.isValidObjectId(postId)) {
             throw new UserInputsException("Post ID is not valid");
