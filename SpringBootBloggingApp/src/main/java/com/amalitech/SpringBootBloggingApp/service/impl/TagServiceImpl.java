@@ -5,22 +5,27 @@ import com.amalitech.SpringBootBloggingApp.model.dto.request.CreateTagRequest;
 import com.amalitech.SpringBootBloggingApp.model.dto.response.PageResponse;
 import com.amalitech.SpringBootBloggingApp.model.entity.Tag;
 import com.amalitech.SpringBootBloggingApp.model.entity.User;
-import com.amalitech.SpringBootBloggingApp.repository.impl.TagRepositoryImpl;
+import com.amalitech.SpringBootBloggingApp.repository.TagRepository;
+import com.amalitech.SpringBootBloggingApp.repository.PostTagRepository;
 import com.amalitech.SpringBootBloggingApp.service.TagService;
 
 import com.amalitech.SpringBootBloggingApp.util.ValidationUtil;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TagServiceImpl implements TagService {
-    private final TagRepositoryImpl tagRepository;
+    private final TagRepository tagRepository;
+    private final PostTagRepository postTagRepository;
     private final Cache<String, User> userCache;
 
-    public TagServiceImpl(TagRepositoryImpl tagRepository, Cache<String, User> userCache) {
+    public TagServiceImpl(TagRepository tagRepository, PostTagRepository postTagRepository, Cache<String, User> userCache) {
         this.tagRepository = tagRepository;
+        this.postTagRepository = postTagRepository;
         this.userCache = userCache;
     }
 
@@ -58,9 +63,9 @@ public class TagServiceImpl implements TagService {
     @Override
     public PageResponse<Tag> getAllPaginated(int page, int size) {
         long total = tagRepository.count();
-        int skip = page * size;
-        var content = tagRepository.findAll(skip, size);
-        return new PageResponse<>(content, page, size, total);
+        var pageable = PageRequest.of(page, size);
+        var pageResult = tagRepository.findAll(pageable);
+        return new PageResponse<>(pageResult.getContent(), page, size, total);
     }
 
     @Override
@@ -71,7 +76,12 @@ public class TagServiceImpl implements TagService {
         if (!ValidationUtil.isValidObjectId(tagId)) {
             throw new UserInputsException("Tag ID is not valid");
         }
-        tagRepository.assignTagToPost(postId, tagId);
+        // Use PostTagRepository for tag assignments
+        com.amalitech.SpringBootBloggingApp.model.entity.PostTag postTag = 
+            new com.amalitech.SpringBootBloggingApp.model.entity.PostTag();
+        postTag.setPostId(postId);
+        postTag.setTagId(tagId);
+        postTagRepository.save(postTag);
     }
 
     @Override
@@ -79,7 +89,11 @@ public class TagServiceImpl implements TagService {
         if (!ValidationUtil.isValidObjectId(postId)) {
             throw new UserInputsException("Post ID is not valid");
         }
-        return tagRepository.findTagsByPostId(postId);
+        var postTags = postTagRepository.findByPostId(postId);
+        return postTags.stream()
+            .map(pt -> tagRepository.findById(pt.getTagId()).orElse(null))
+            .filter(tag -> tag != null)
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -87,7 +101,7 @@ public class TagServiceImpl implements TagService {
         if (!ValidationUtil.isValidObjectId(postId)) {
             throw new UserInputsException("Post ID is not valid");
         }
-        tagRepository.unassignAllTagsFromPost(postId);
+        postTagRepository.deleteByPostId(postId);
     }
 
     @Override
@@ -98,6 +112,6 @@ public class TagServiceImpl implements TagService {
         if (!ValidationUtil.isValidObjectId(tagId)) {
             throw new UserInputsException("Tag ID is not valid");
         }
-        tagRepository.unassignTagFromPost(postId, tagId);
+        postTagRepository.deleteByPostIdAndTagId(postId, tagId);
     }
 }

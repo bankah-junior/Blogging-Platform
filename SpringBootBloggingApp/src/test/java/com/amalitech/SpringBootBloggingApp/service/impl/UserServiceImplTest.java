@@ -7,7 +7,6 @@ import com.amalitech.SpringBootBloggingApp.model.dto.request.UpdateUserDetailReq
 import com.amalitech.SpringBootBloggingApp.model.dto.request.UpdateUserRequest;
 import com.amalitech.SpringBootBloggingApp.model.dto.response.UserResponse;
 import com.amalitech.SpringBootBloggingApp.model.entity.User;
-import com.amalitech.SpringBootBloggingApp.repository.impl.UserRepositoryImpl;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

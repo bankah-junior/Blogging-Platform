@@ -41,7 +41,9 @@ public class PostTagServiceImpl implements PostTagService {
             throw new UserInputsException("Invalid Post ID or Tag ID");
         }
         PostTag postTag = new PostTag(postId, tagId);
-        return postTagRepository.update(postTag);
+        PostTag saved = postTagRepository.save(postTag);
+        DtoMapper.toPostTagResponse(saved);
+        return true;
     }
     
     @Override
@@ -112,7 +114,8 @@ public class PostTagServiceImpl implements PostTagService {
     public PageResponse<PostTag> getAllPaginated(int page, int size) {
         long total = postTagRepository.count();
         int skip = page * size;
-        var content = postTagRepository.findAll(skip, size);
+        var contentAll = postTagRepository.findAll();
+        var content = contentAll.stream().skip(skip).limit(size).toList();
         return new PageResponse<>(content, page, size, total);
     }
 }

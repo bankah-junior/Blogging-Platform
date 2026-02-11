@@ -8,12 +8,13 @@ import com.amalitech.SpringBootBloggingApp.model.dto.request.UpdateUserRequest;
 import com.amalitech.SpringBootBloggingApp.model.dto.response.PageResponse;
 import com.amalitech.SpringBootBloggingApp.model.dto.response.UserResponse;
 import com.amalitech.SpringBootBloggingApp.model.entity.User;
-import com.amalitech.SpringBootBloggingApp.repository.impl.UserRepositoryImpl;
+import com.amalitech.SpringBootBloggingApp.repository.UserRepository;
 import com.amalitech.SpringBootBloggingApp.service.UserService;
 
 import com.amalitech.SpringBootBloggingApp.util.JwtUtil;
 import com.amalitech.SpringBootBloggingApp.util.ValidationUtil;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,10 +25,10 @@ import static com.amalitech.SpringBootBloggingApp.util.PasswordUtil.verifyPasswo
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepositoryImpl userRepository;
+    private final UserRepository userRepository;
     private final Cache<String, User> userCache;
 
-    public UserServiceImpl(UserRepositoryImpl userRepository, Cache<String, User> userCache) {
+    public UserServiceImpl(UserRepository userRepository, Cache<String, User> userCache) {
         this.userRepository = userRepository;
         this.userCache = userCache;
     }
@@ -111,15 +112,16 @@ public class UserServiceImpl implements UserService {
                 foundUser.getCreatedAt(),
                 System.currentTimeMillis()
         );
-        if (userRepository.update(updateUser)) {
-            userCache.put(updateUser.getId(), updateUser);
-            String token = JwtUtil.generateToken(updateUser.getId(), updateUser.getEmail());
+        User saved = userRepository.save(updateUser);
+        if (saved != null) {
+            userCache.put(saved.getId(), saved);
+            String token = JwtUtil.generateToken(saved.getId(), saved.getEmail());
             return new UserResponse(
-                    updateUser.getId(),
-                    updateUser.getUsername(),
-                    updateUser.getEmail(),
-                    updateUser.getCreatedAt(),
-                    updateUser.getUpdatedAt(),
+                    saved.getId(),
+                    saved.getUsername(),
+                    saved.getEmail(),
+                    saved.getCreatedAt(),
+                    saved.getUpdatedAt(),
                     token
             );
         }
@@ -131,11 +133,9 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findById(userId).isEmpty()) {
             throw new UserInputsException("User not found");
         }
-        boolean deleted = userRepository.deleteById(userId);
-        if (deleted) {
-            userCache.remove(userId);
-        }
-        return deleted;
+        userRepository.deleteById(userId);
+        userCache.remove(userId);
+        return true;
     }
 
     @Override
@@ -199,9 +199,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public PageResponse<User> getAllPaginated(int page, int size) {
         long total = userRepository.count();
-        int skip = page * size;
-        var content = userRepository.findAll(skip, size);
-        return new PageResponse<>(content, page, size, total);
+        var pageable = PageRequest.of(page, size);
+        var pageResult = userRepository.findAll(pageable);
+        return new PageResponse<>(pageResult.getContent(), page, size, total);
     }
 
     @Override
@@ -215,19 +215,19 @@ public class UserServiceImpl implements UserService {
         if (!ValidationUtil.isEmailValid(user.getEmail())) {
             throw new UserInputsException("Email is not valid");
         }
-        User updateUser = new User(
-                userId,
-                user.getUsername(),
-                user.getEmail(),
-                null,
-                null,
-                System.currentTimeMillis()
+        User existingUser = userRepository.findById(userId).orElseThrow(
+            () -> new UserInputsException("User not found")
         );
-        boolean updated = userRepository.updateUserDetails(userId, updateUser);
-        if (updated) {
-            userCache.put(updateUser.getId(), updateUser);
+        existingUser.setUsername(user.getUsername());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setUpdatedAt(System.currentTimeMillis());
+        
+        User saved = userRepository.save(existingUser);
+        if (saved != null) {
+            userCache.put(saved.getId(), saved);
+            return true;
         }
-        return updated;
+        return false;
     }
 
     @Override
@@ -247,11 +247,13 @@ public class UserServiceImpl implements UserService {
             throw new UserInputsException("Old password is not valid");
         }
         user.setPasswordHash(hashPassword(newPassword));
-        boolean updated = userRepository.update(user);
-        if (updated) {
-            userCache.put(user.getId(), user);
+        user.setUpdatedAt(System.currentTimeMillis());
+        User saved = userRepository.save(user);
+        if (saved != null) {
+            userCache.put(saved.getId(), saved);
+            return true;
         }
-        return updated;
+        return false;
     }
 
     @Override
