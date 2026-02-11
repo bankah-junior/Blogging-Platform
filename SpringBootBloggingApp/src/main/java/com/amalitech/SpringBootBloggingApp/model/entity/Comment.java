@@ -5,13 +5,23 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "comments")
-@CompoundIndex(name = "post_user_idx", def = "{'post': 1, 'user': 1}")
+@CompoundIndexes({
+    // Optimize: Get comments by post sorted by date
+    @CompoundIndex(name = "post_created_idx", def = "{'post': 1, 'createdAt': -1}"),
+    
+    // Optimize: Get comments by user sorted by date
+    @CompoundIndex(name = "user_created_idx", def = "{'user': 1, 'createdAt': -1}"),
+    
+    // Optimize: Prevent duplicate comments (same user/post combination)
+    @CompoundIndex(name = "post_user_idx", def = "{'post': 1, 'user': 1}")
+})
 public class Comment {
 
     @Id

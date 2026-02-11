@@ -4,14 +4,27 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
 @Document(collection = "posts")
+@CompoundIndexes({
+    // Optimize: Get published posts sorted by date (most common query)
+    @CompoundIndex(name = "published_created_idx", def = "{'published': 1, 'createdAt': -1}"),
+    
+    // Optimize: Get posts by author sorted by date
+    @CompoundIndex(name = "author_created_idx", def = "{'author': 1, 'createdAt': -1}"),
+    
+    // Optimize: Get published posts by author
+    @CompoundIndex(name = "author_published_idx", def = "{'author': 1, 'published': 1, 'createdAt': -1}")
+})
 public class Post {
 
     @Id
@@ -24,11 +37,12 @@ public class Post {
 
     @NotBlank
     @Size(min = 1, max = 200)
-    @Indexed
+    @TextIndexed(weight = 2)  // Higher weight for title in text search
     private String title;
 
     @NotBlank
     @Size(max = 10000)
+    @TextIndexed  // Enable full-text search on content
     private String content;
 
     @Indexed
