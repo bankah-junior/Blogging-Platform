@@ -11,6 +11,8 @@ import com.amalitech.SpringBootBloggingApp.service.TagService;
 
 import com.amalitech.SpringBootBloggingApp.util.ValidationUtil;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +45,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "tags", allEntries = true)
     public Tag create(Tag tag) {
         if (!ValidationUtil.isValidTagName(tag.getName())) {
             throw new UserInputsException("Tag name is not valid");
@@ -51,6 +54,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "tags", key = "#tagId")
     @Override
     public Tag getById(String tagId) {
         if (!ValidationUtil.isValidObjectId(tagId)) {
@@ -61,6 +65,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "tags", key = "#name")
     public Tag getByName(String name) {
         if (!ValidationUtil.isValidTagName(name)) {
             throw new UserInputsException("Tag name is not valid");
@@ -70,6 +75,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "tags", key = "'all'")
     public List<Tag> getAll() {
         return tagRepository.findAll();
     }
@@ -85,6 +91,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "tags", allEntries = true)
     public void assignTagToPost(String postId, String tagId) {
         if (!ValidationUtil.isValidObjectId(postId)) {
             throw new UserInputsException("Post ID is not valid");
@@ -102,6 +109,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "tags", key = "#postId")
     public List<Tag> getTagsByPost(String postId) {
         if (!ValidationUtil.isValidObjectId(postId)) {
             throw new UserInputsException("Post ID is not valid");
@@ -115,6 +123,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "tags", allEntries = true)
     public void unassignAllTagsFromPost(String postId) {
         if (!ValidationUtil.isValidObjectId(postId)) {
             throw new UserInputsException("Post ID is not valid");
@@ -124,6 +133,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "tags", allEntries = true)
     public void unassignTagFromPost(String postId, String tagId) {
         if (!ValidationUtil.isValidObjectId(postId)) {
             throw new UserInputsException("Post ID is not valid");

@@ -13,6 +13,8 @@ import com.amalitech.SpringBootBloggingApp.service.ReviewService;
 
 import com.amalitech.SpringBootBloggingApp.util.ValidationUtil;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -52,6 +54,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "reviews", allEntries = true)
     public Review create(Review review) {
         if (!ValidationUtil.isValidObjectId(review.getUser().getId())) {
             throw new UserInputsException("Invalid user ID");
@@ -70,6 +73,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "reviews", key = "#reviewId")
     public Review getById(String reviewId) {
         if (!ValidationUtil.isValidObjectId(reviewId)) {
             throw new UserInputsException("Invalid review ID");
@@ -79,6 +83,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "reviews", allEntries = true)
     public boolean delete(String reviewId) {
         if (!ValidationUtil.isValidObjectId(reviewId)) {
             throw new UserInputsException("Invalid review ID");
@@ -89,6 +94,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "reviews", allEntries = true)
     public boolean update(Review review) {
         if (!ValidationUtil.isValidObjectId(review.getId())) {
             throw new UserInputsException("Invalid review ID");
@@ -99,6 +105,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "reviews", key = "#postId")
     public List<Review> getByPost(String postId) {
         if (!ValidationUtil.isValidObjectId(postId)) {
             throw new UserInputsException("Invalid post ID");
@@ -125,6 +132,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "reviews", key = "#userId")
     public List<Review> getByUser(String userId) {
         if (!ValidationUtil.isValidObjectId(userId)) {
             throw new UserInputsException("Invalid user ID");
@@ -151,6 +159,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "reviews", key = "#postId")
     public double getAverageRatingForPost(String postId) {
         if (!ValidationUtil.isValidObjectId(postId)) {
             throw new UserInputsException("Invalid post ID");
@@ -167,6 +176,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "reviews", key = "'all'")
     public List<Review> getAll() {
         return reviewRepository.findAll();
     }

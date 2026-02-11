@@ -13,6 +13,8 @@ import com.amalitech.SpringBootBloggingApp.service.CommentService;
 
 import com.amalitech.SpringBootBloggingApp.util.ValidationUtil;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -52,6 +54,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "comments", allEntries = true)
     public Comment create(Comment comment) {
         if(!ValidationUtil.isValidComment(comment.getContent())) {
             throw new UserInputsException("Invalid comment");
@@ -61,6 +64,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "comments", allEntries = true)
     public boolean delete(String commentId) {
         if(!ValidationUtil.isValidObjectId(commentId)) {
             throw new UserInputsException("Invalid comment ID");
@@ -71,6 +75,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "comments", key = "#postId")
     public List<Comment> getByPost(String postId) {
         if(!ValidationUtil.isValidObjectId(postId)) {
             throw new UserInputsException("Invalid post ID");
@@ -97,6 +102,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "comments", key = "#userId")
     public List<Comment> getByUser(String userId) {
         if(!ValidationUtil.isValidObjectId(userId)) {
             throw new UserInputsException("Invalid user ID");
@@ -123,6 +129,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "comments", allEntries = true)
     public boolean update(Comment comment) {
         if(!ValidationUtil.isValidObjectId(comment.getId())) {
             throw new UserInputsException("Invalid comment ID");
@@ -136,6 +143,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "comments", key = "'all'")
     public List<Comment> getAll() {
         return commentRepository.findAll();
     }
@@ -151,6 +159,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "comments", key = "#commentId")
     public Comment findById(String commentId) {
         if(!ValidationUtil.isValidObjectId(commentId)) {
             throw new UserInputsException("Invalid comment ID");
