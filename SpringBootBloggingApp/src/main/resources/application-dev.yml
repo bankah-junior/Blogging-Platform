@@ -8,3 +8,7 @@ app:
   cache:
     ttl-ms: 600000
 
+logging:
+  level:
+    com.amalitech.SpringBootBloggingApp.security: INFO
+    com.amalitech.SpringBootBloggingApp.service: INFO

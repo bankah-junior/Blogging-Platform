@@ -39,6 +39,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final TokenBlacklistService tokenBlacklistService;
     private final SessionTrackingService sessionTrackingService;
+    private final SecurityAuditService securityAuditService;
 
     public AuthService(UserRepository userRepository,
                       RoleRepository roleRepository,
@@ -46,7 +47,8 @@ public class AuthService {
                       JwtUtil jwtUtil,
                       AuthenticationManager authenticationManager,
                       TokenBlacklistService tokenBlacklistService,
-                      SessionTrackingService sessionTrackingService) {
+                      SessionTrackingService sessionTrackingService,
+                      SecurityAuditService securityAuditService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -54,6 +56,7 @@ public class AuthService {
         this.authenticationManager = authenticationManager;
         this.tokenBlacklistService = tokenBlacklistService;
         this.sessionTrackingService = sessionTrackingService;
+        this.securityAuditService = securityAuditService;
     }
 
     @Transactional
@@ -90,14 +93,28 @@ public class AuthService {
 
     public AuthResponse login(LoginRequest request) {
         try {
+            // Check if account is locked
+            if (securityAuditService.isAccountLocked(request.getEmail())) {
+                securityAuditService.recordLoginAttempt(null, request.getEmail(), request.getIpAddress(), 
+                        false, "Account temporarily locked due to multiple failed attempts");
+                throw new BadCredentialsException("Account temporarily locked. Please try again later.");
+            }
+
             // Find user by email first
             User user = userRepository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
+                    .orElseThrow(() -> {
+                        securityAuditService.recordLoginAttempt(null, request.getEmail(), request.getIpAddress(), 
+                                false, "Invalid email");
+                        return new BadCredentialsException("Invalid email or password");
+                    });
             
-            return authenticateAndGenerateTokens(user.getUsername(), request.getPassword(), request.getIpAddress());
+            AuthResponse response = authenticateAndGenerateTokens(user.getUsername(), request.getPassword(), request.getIpAddress());
+            securityAuditService.recordLoginAttempt(user.getUsername(), request.getEmail(), request.getIpAddress(), 
+                    true, "Login successful");
+            return response;
         } catch (BadCredentialsException e) {
-            logger.warn("Failed login attempt for email: {}", request.getEmail());
-            throw new BadCredentialsException("Invalid email or password");
+            logger.warn("Failed login attempt for email: {} from IP: {}", request.getEmail(), request.getIpAddress());
+            throw e;
         }
     }
 
@@ -145,38 +162,47 @@ public class AuthService {
     }
 
     private AuthResponse authenticateAndGenerateTokens(String username, String password, String ipAddress) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, password)
-        );
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(username, password)
+            );
 
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-        String accessToken = jwtUtil.generateToken(userDetails);
-        String refreshToken = jwtUtil.generateRefreshToken(userDetails);
+            String accessToken = jwtUtil.generateToken(userDetails);
+            String refreshToken = jwtUtil.generateRefreshToken(userDetails);
 
-        // Track session
-        if (ipAddress != null) {
-            sessionTrackingService.createSession(accessToken, username, ipAddress);
+            // Track session
+            if (ipAddress != null) {
+                sessionTrackingService.createSession(accessToken, username, ipAddress);
+                securityAuditService.recordSessionCreated(username, ipAddress);
+            }
+
+            List<String> roles = userDetails.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .map(role -> role.replace("ROLE_", ""))
+                    .collect(Collectors.toList());
+
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+            logger.info("User authenticated successfully: {} from IP: {}", username, ipAddress);
+
+            return new AuthResponse(
+                    accessToken,
+                    refreshToken,
+                    jwtUtil.getJwtExpirationMs(),
+                    user.getUsername(),
+                    user.getEmail(),
+                    roles
+            );
+        } catch (BadCredentialsException e) {
+            User user = userRepository.findByUsername(username).orElse(null);
+            String email = user != null ? user.getEmail() : null;
+            securityAuditService.recordLoginAttempt(username, email, ipAddress, 
+                    false, "Invalid credentials");
+            throw e;
         }
-
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .map(role -> role.replace("ROLE_", ""))
-                .collect(Collectors.toList());
-
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        logger.info("User authenticated successfully: {}", username);
-
-        return new AuthResponse(
-                accessToken,
-                refreshToken,
-                jwtUtil.getJwtExpirationMs(),
-                user.getUsername(),
-                user.getEmail(),
-                roles
-        );
     }
 
     public void logout(String token) {
@@ -184,10 +210,19 @@ public class AuthService {
             String username = jwtUtil.extractUsername(token);
             long expirationTime = jwtUtil.extractExpiration(token).getTime();
             
+            // Get session info before invalidating
+            SessionTrackingService.SessionInfo sessionInfo = sessionTrackingService.getSessionInfo(token);
+            String ipAddress = sessionInfo != null ? sessionInfo.getIpAddress() : null;
+            
             tokenBlacklistService.blacklistToken(token, expirationTime);
             sessionTrackingService.invalidateSession(token);
             
-            logger.info("User logged out: {}", username);
+            securityAuditService.recordTokenBlacklist(username, token);
+            if (ipAddress != null) {
+                securityAuditService.recordSessionTerminated(username, ipAddress);
+            }
+            
+            logger.info("User logged out: {} from IP: {}", username, ipAddress);
         } catch (Exception e) {
             logger.error("Error during logout: {}", e.getMessage());
             throw new RuntimeException("Logout failed");

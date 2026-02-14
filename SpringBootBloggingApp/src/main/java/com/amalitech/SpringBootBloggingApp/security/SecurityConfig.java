@@ -63,6 +63,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/comments/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/reviews/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/users/**").permitAll()
+                        // Security audit endpoints (Admin only - secured by @PreAuthorize)
+                        .requestMatchers("/api/security/**").authenticated()
                         // Protected endpoints - will be secured with @PreAuthorize in controllers
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/author/**").hasAnyRole("ADMIN", "AUTHOR")
