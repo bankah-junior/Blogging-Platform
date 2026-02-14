@@ -12,6 +12,8 @@ public class LoginRequest {
     @NotBlank(message = "Password is required")
     private String password;
 
+    private String ipAddress;
+
     public LoginRequest() {
     }
 
@@ -34,6 +36,14 @@ public class LoginRequest {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
     }
 }
 

@@ -7,10 +7,12 @@ import com.amalitech.SpringBootBloggingApp.model.dto.response.AuthResponse;
 import com.amalitech.SpringBootBloggingApp.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -44,8 +46,9 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "User login", description = "Authenticates user and returns JWT access and refresh tokens")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
         try {
+            request.setIpAddress(getClientIpAddress(httpRequest));
             AuthResponse response = authService.login(request);
             return ResponseEntity.ok(response);
         } catch (BadCredentialsException e) {
@@ -79,6 +82,42 @@ public class AuthController {
         response.put("valid", true);
         response.put("message", "Token is valid");
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "User logout", description = "Blacklists the current token and invalidates the session")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        try {
+            String token = extractJwtFromRequest(request);
+            if (token != null) {
+                authService.logout(token);
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "Logged out successfully");
+                return ResponseEntity.ok(response);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(createErrorResponse("No token provided"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(createErrorResponse("Logout failed: " + e.getMessage()));
+        }
+    }
+
+    private String extractJwtFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
+
+    private String getClientIpAddress(HttpServletRequest request) {
+        String xForwardedForHeader = request.getHeader("X-Forwarded-For");
+        if (xForwardedForHeader != null && !xForwardedForHeader.isEmpty()) {
+            return xForwardedForHeader.split(",")[0].trim();
+        }
+        return request.getRemoteAddr();
     }
 
     private Map<String, String> createErrorResponse(String message) {

@@ -37,17 +37,23 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
+    private final TokenBlacklistService tokenBlacklistService;
+    private final SessionTrackingService sessionTrackingService;
 
     public AuthService(UserRepository userRepository,
                       RoleRepository roleRepository,
                       PasswordEncoder passwordEncoder,
                       JwtUtil jwtUtil,
-                      AuthenticationManager authenticationManager) {
+                      AuthenticationManager authenticationManager,
+                      TokenBlacklistService tokenBlacklistService,
+                      SessionTrackingService sessionTrackingService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
+        this.tokenBlacklistService = tokenBlacklistService;
+        this.sessionTrackingService = sessionTrackingService;
     }
 
     @Transactional
@@ -79,7 +85,7 @@ public class AuthService {
         User savedUser = userRepository.save(user);
         logger.info("New user registered: {}", savedUser.getUsername());
 
-        return authenticateAndGenerateTokens(request.getUsername(), request.getPassword());
+        return authenticateAndGenerateTokens(request.getUsername(), request.getPassword(), null);
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -88,7 +94,7 @@ public class AuthService {
             User user = userRepository.findByEmail(request.getEmail())
                     .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
             
-            return authenticateAndGenerateTokens(user.getUsername(), request.getPassword());
+            return authenticateAndGenerateTokens(user.getUsername(), request.getPassword(), request.getIpAddress());
         } catch (BadCredentialsException e) {
             logger.warn("Failed login attempt for email: {}", request.getEmail());
             throw new BadCredentialsException("Invalid email or password");
@@ -138,7 +144,7 @@ public class AuthService {
         }
     }
 
-    private AuthResponse authenticateAndGenerateTokens(String username, String password) {
+    private AuthResponse authenticateAndGenerateTokens(String username, String password, String ipAddress) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password)
         );
@@ -147,6 +153,11 @@ public class AuthService {
 
         String accessToken = jwtUtil.generateToken(userDetails);
         String refreshToken = jwtUtil.generateRefreshToken(userDetails);
+
+        // Track session
+        if (ipAddress != null) {
+            sessionTrackingService.createSession(accessToken, username, ipAddress);
+        }
 
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -166,5 +177,20 @@ public class AuthService {
                 user.getEmail(),
                 roles
         );
+    }
+
+    public void logout(String token) {
+        try {
+            String username = jwtUtil.extractUsername(token);
+            long expirationTime = jwtUtil.extractExpiration(token).getTime();
+            
+            tokenBlacklistService.blacklistToken(token, expirationTime);
+            sessionTrackingService.invalidateSession(token);
+            
+            logger.info("User logged out: {}", username);
+        } catch (Exception e) {
+            logger.error("Error during logout: {}", e.getMessage());
+            throw new RuntimeException("Logout failed");
+        }
     }
 }
