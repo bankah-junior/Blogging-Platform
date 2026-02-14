@@ -10,6 +10,7 @@ import com.amalitech.SpringBootBloggingApp.model.dto.response.UserResponse;
 import com.amalitech.SpringBootBloggingApp.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,22 +30,6 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
-    }
-
-    @PostMapping("/login")
-    @Operation(summary = "User Login", description = "Logs in a user and returns a JWT token")
-    @Tag(name = "User")
-    public ResponseEntity<ApiResponse<UserResponse>> login(@RequestBody LoginRequest loginRequest) {
-        UserResponse userResponse = userService.login(loginRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(userResponse));
-    }
-
-    @PostMapping("/register")
-    @Operation(summary = "User Registration", description = "Registers a new user and returns the user details with a JWT token")
-    @Tag(name = "User")
-    public ResponseEntity<ApiResponse<UserResponse>> register(@RequestBody RegisterRequest registerRequest) {
-        UserResponse userResponse = userService.create(registerRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("User registered", userResponse));
     }
 
     @GetMapping("/{userId}")
@@ -76,6 +61,7 @@ public class UserController {
 
     @PutMapping("/{userId}")
     @Operation(summary = "Update User", description = "Updates user details")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Tag(name = "User")
     public ResponseEntity<ApiResponse<UserResponse>> updateUser(@PathVariable String userId,
                                                                @RequestBody UpdateUserDetailRequest updateUserDetailRequest) {
@@ -89,6 +75,7 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     @Operation(summary = "Delete User by ID", description = "Deletes a user by their ID")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Tag(name = "User")
     public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable String userId) {
         boolean isDeleted = userService.delete(userId);

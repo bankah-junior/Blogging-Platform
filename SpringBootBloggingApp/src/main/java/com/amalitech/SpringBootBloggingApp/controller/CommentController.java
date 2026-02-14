@@ -10,6 +10,7 @@ import com.amalitech.SpringBootBloggingApp.model.entity.Comment;
 import com.amalitech.SpringBootBloggingApp.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,7 @@ public class CommentController {
      */
     @PostMapping("/create")
     @Operation(summary = "Create a comment", description = "Creates a new comment for a post")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Tag(name = "Comment")
     public ResponseEntity<ApiResponse<CommentResponse>> create(@Valid @RequestBody CreateCommentRequest request) {
         Comment createdComment = commentService.create(request);
@@ -97,6 +99,7 @@ public class CommentController {
 
     @PutMapping("/update")
     @Operation(summary = "Update a comment", description = "Updates a comment")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Tag(name = "Comment")
     public ResponseEntity<ApiResponse<CommentResponse>> update(@Valid @RequestBody UpdateCommentRequest request) {
         Comment existing = commentService.findById(request.getId());
@@ -110,6 +113,7 @@ public class CommentController {
 
     @DeleteMapping("/delete/{commentId}")
     @Operation(summary = "Delete a comment", description = "Deletes a comment by its id")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Tag(name = "Comment")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable String commentId) {
         boolean deleted = commentService.delete(commentId);

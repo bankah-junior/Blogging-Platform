@@ -9,6 +9,7 @@ import com.amalitech.SpringBootBloggingApp.model.entity.Tag;
 import com.amalitech.SpringBootBloggingApp.service.TagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,7 @@ public class TagController {
 
     @PostMapping("/create")
     @Operation(summary = "Create a new tag", description = "Creates a new tag")
+    @SecurityRequirement(name = "Bearer Authentication")
     @io.swagger.v3.oas.annotations.tags.Tag(name = "Tag")
     public ResponseEntity<ApiResponse<TagResponse>> createTag(@Valid @RequestBody CreateTagRequest request) {
         Tag createdTag = tagService.create(request);
@@ -51,6 +53,7 @@ public class TagController {
 
     @PostMapping("/{postId}/assign/{tagId}")
     @Operation(summary = "Assign a tag to a post", description = "Assigns a tag to a post")
+    @SecurityRequirement(name = "Bearer Authentication")
     @io.swagger.v3.oas.annotations.tags.Tag(name = "Tag")
     public ResponseEntity<ApiResponse<Void>> assignTagToPost(@PathVariable String postId, @PathVariable String tagId) {
         tagService.assignTagToPost(postId, tagId);
@@ -67,6 +70,7 @@ public class TagController {
 
     @PostMapping("/{postId}/unassign/{tagId}")
     @Operation(summary = "Unassign a tag from a post", description = "Unassigns a specific tag from a post")
+    @SecurityRequirement(name = "Bearer Authentication")
     @io.swagger.v3.oas.annotations.tags.Tag(name = "Tag")
     public ResponseEntity<ApiResponse<Void>> unassignTagFromPost(@PathVariable String postId, @PathVariable String tagId) {
         tagService.unassignTagFromPost(postId, tagId);

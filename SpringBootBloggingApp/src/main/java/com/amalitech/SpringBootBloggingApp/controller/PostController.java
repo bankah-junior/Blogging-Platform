@@ -10,6 +10,7 @@ import com.amalitech.SpringBootBloggingApp.model.entity.Post;
 import com.amalitech.SpringBootBloggingApp.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,7 @@ public class PostController {
      */
     @PostMapping("/create")
     @Operation(summary = "Create a new post", description = "Creates a new post")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Tag(name = "Post")
     public ResponseEntity<ApiResponse<PostResponse>> createPost(@Valid @RequestBody CreatePostRequest request) {
         Post createdPost = postService.create(request);
@@ -117,6 +119,7 @@ public class PostController {
      */
     @PutMapping("/update")
     @Operation(summary = "Update a post", description = "Updates a post")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Tag(name = "Post")
     public ResponseEntity<ApiResponse<PostResponse>> updatePost(@Valid @RequestBody UpdatePostRequest request) {
         Post existing = postService.getById(request.getId());
@@ -137,6 +140,7 @@ public class PostController {
      */
     @DeleteMapping("/delete/{id}")
     @Operation(summary = "Delete a post by ID", description = "Deletes a post by ID")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Tag(name = "Post")
     public ResponseEntity<ApiResponse<Void>> deletePostById(@PathVariable String id) {
         postService.delete(id);

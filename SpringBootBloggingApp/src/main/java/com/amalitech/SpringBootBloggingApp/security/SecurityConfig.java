@@ -49,13 +49,20 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints
+                        // Public endpoints - Authentication
+                        .requestMatchers("/api/v1/users/login", "/api/v1/users/register").permitAll()
                         .requestMatchers("/auth/**", "/api/public/**").permitAll()
+                        // Swagger/OpenAPI
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/graphql").permitAll()
                         // OAuth2 endpoints
                         .requestMatchers("/oauth2/**", "/login/oauth2/**", "/login**", "/error**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/posts/**", "/api/tags/**").permitAll()
+                        // Public read endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/tags/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/comments/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/reviews/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/users/**").permitAll()
                         // Protected endpoints - will be secured with @PreAuthorize in controllers
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/author/**").hasAnyRole("ADMIN", "AUTHOR")

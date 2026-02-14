@@ -10,6 +10,7 @@ import com.amalitech.SpringBootBloggingApp.model.entity.Review;
 import com.amalitech.SpringBootBloggingApp.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,7 @@ public class ReviewController {
 
     @PostMapping("/create")
     @Operation(summary = "Create a new review", description = "Creates a new review for a post")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Tag(name = "Review")
     public ResponseEntity<ApiResponse<ReviewResponse>> create(@Valid @RequestBody CreateReviewRequest request) {
         Review createdReview = reviewService.create(request);
@@ -42,6 +44,7 @@ public class ReviewController {
 
     @DeleteMapping("/delete/{reviewId}")
     @Operation(summary = "Delete a review by ID", description = "Deletes a review by its ID")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Tag(name = "Review")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable String reviewId) {
         boolean isDeleted = reviewService.delete(reviewId);
@@ -51,6 +54,7 @@ public class ReviewController {
 
     @PutMapping("/update")
     @Operation(summary = "Update a review", description = "Updates a review")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Tag(name = "Review")
     public ResponseEntity<ApiResponse<ReviewResponse>> update(@Valid @RequestBody UpdateReviewRequest request) {
         Review existing = reviewService.getById(request.getId());
