@@ -5,10 +5,9 @@ import com.amalitech.SpringBootBloggingApp.model.dto.request.CreateTagRequest;
 import com.amalitech.SpringBootBloggingApp.model.dto.response.PageResponse;
 import com.amalitech.SpringBootBloggingApp.model.entity.Tag;
 import com.amalitech.SpringBootBloggingApp.model.entity.User;
-import com.amalitech.SpringBootBloggingApp.repository.TagRepository;
 import com.amalitech.SpringBootBloggingApp.repository.PostTagRepository;
+import com.amalitech.SpringBootBloggingApp.repository.TagRepository;
 import com.amalitech.SpringBootBloggingApp.service.TagService;
-
 import com.amalitech.SpringBootBloggingApp.util.ValidationUtil;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
 import org.springframework.cache.annotation.CacheEvict;

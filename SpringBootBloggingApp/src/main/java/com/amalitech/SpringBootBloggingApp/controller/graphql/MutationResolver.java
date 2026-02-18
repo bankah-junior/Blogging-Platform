@@ -2,16 +2,8 @@ package com.amalitech.SpringBootBloggingApp.controller.graphql;
 
 import com.amalitech.SpringBootBloggingApp.model.dto.request.*;
 import com.amalitech.SpringBootBloggingApp.model.dto.response.UserResponse;
-import com.amalitech.SpringBootBloggingApp.model.entity.Comment;
-import com.amalitech.SpringBootBloggingApp.model.entity.Post;
-import com.amalitech.SpringBootBloggingApp.model.entity.Review;
-import com.amalitech.SpringBootBloggingApp.model.entity.Tag;
-import com.amalitech.SpringBootBloggingApp.model.entity.User;
-import com.amalitech.SpringBootBloggingApp.service.CommentService;
-import com.amalitech.SpringBootBloggingApp.service.PostService;
-import com.amalitech.SpringBootBloggingApp.service.ReviewService;
-import com.amalitech.SpringBootBloggingApp.service.TagService;
-import com.amalitech.SpringBootBloggingApp.service.UserService;
+import com.amalitech.SpringBootBloggingApp.model.entity.*;
+import com.amalitech.SpringBootBloggingApp.service.*;
 import com.amalitech.SpringBootBloggingApp.util.JwtUtilManual;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;

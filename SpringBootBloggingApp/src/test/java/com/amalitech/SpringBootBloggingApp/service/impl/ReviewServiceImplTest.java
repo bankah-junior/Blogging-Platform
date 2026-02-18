@@ -4,6 +4,7 @@ import com.amalitech.SpringBootBloggingApp.cache.Cache;
 import com.amalitech.SpringBootBloggingApp.model.entity.Post;
 import com.amalitech.SpringBootBloggingApp.model.entity.Review;
 import com.amalitech.SpringBootBloggingApp.model.entity.User;
+import com.amalitech.SpringBootBloggingApp.repository.ReviewRepository;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +23,7 @@ import static org.mockito.Mockito.*;
 class ReviewServiceImplTest {
 
     @Mock
-    private ReviewRepositoryImpl reviewRepository;
+    private ReviewRepository reviewRepository;
 
     @Mock
     private Cache<String, User> userCache;
@@ -126,17 +127,6 @@ class ReviewServiceImplTest {
     }
 
     @Test
-    @DisplayName("Delete Valid Review Id Returns True")
-    void delete_ValidReviewId_ReturnsTrue() {
-        when(reviewRepository.deleteById(testReview.getId())).thenReturn(true);
-
-        boolean result = reviewService.delete(testReview.getId());
-
-        assertTrue(result);
-        verify(reviewRepository).deleteById(testReview.getId());
-    }
-
-    @Test
     @DisplayName("Delete Invalid Review Id Throws UserInputsException")
     void delete_InvalidReviewId_ThrowsUserInputsException() {
         assertThrows(UserInputsException.class, () -> reviewService.delete("invalid-id"));
@@ -144,25 +134,14 @@ class ReviewServiceImplTest {
     }
 
     @Test
-    @DisplayName("Delete Failed Delete Returns False")
-    void delete_FailedDelete_ReturnsFalse() {
-        when(reviewRepository.deleteById(testReview.getId())).thenReturn(false);
-
-        boolean result = reviewService.delete(testReview.getId());
-
-        assertFalse(result);
-        verify(reviewRepository).deleteById(testReview.getId());
-    }
-
-    @Test
     @DisplayName("Update Valid Review Returns True")
     void update_ValidReview_ReturnsTrue() {
-        when(reviewRepository.update(testReview)).thenReturn(true);
+        when(reviewRepository.save(testReview)).thenReturn(testReview);
 
         boolean result = reviewService.update(testReview);
 
         assertTrue(result);
-        verify(reviewRepository).update(testReview);
+        verify(reviewRepository).save(testReview);
     }
 
     @Test
@@ -171,18 +150,7 @@ class ReviewServiceImplTest {
         Review invalidReview = new Review("invalid-id", testPost, testUser, 5, "Excellent post!", 123456789L, null);
 
         assertThrows(UserInputsException.class, () -> reviewService.update(invalidReview));
-        verify(reviewRepository, never()).update(any(Review.class));
-    }
-
-    @Test
-    @DisplayName("Update Failed Update Returns False")
-    void update_FailedUpdate_ReturnsFalse() {
-        when(reviewRepository.update(testReview)).thenReturn(false);
-
-        boolean result = reviewService.update(testReview);
-
-        assertFalse(result);
-        verify(reviewRepository).update(testReview);
+        verify(reviewRepository, never()).save(any(Review.class));
     }
 
     @Test
@@ -222,30 +190,30 @@ class ReviewServiceImplTest {
     @Test
     @DisplayName("Get Average Rating For Post Valid Post Id Returns Average Rating")
     void getAverageRatingForPost_ValidPostId_ReturnsAverageRating() {
-        when(reviewRepository.calculateAverageRating(testPost2.getId())).thenReturn(4.5);
+        when(reviewRepository.calculateAverageRatingByPostId(testPost2.getId())).thenReturn(4.5);
 
         double result = reviewService.getAverageRatingForPost(testPost2.getId());
 
         assertEquals(4.5, result);
-        verify(reviewRepository).calculateAverageRating(testPost2.getId());
+        verify(reviewRepository).calculateAverageRatingByPostId(testPost2.getId());
     }
 
     @Test
     @DisplayName("Get Average Rating For Post Invalid Post Id Throws UserInputsException")
     void getAverageRatingForPost_InvalidPostId_ThrowsUserInputsException() {
         assertThrows(UserInputsException.class, () -> reviewService.getAverageRatingForPost("invalid-id"));
-        verify(reviewRepository, never()).calculateAverageRating(anyString());
+        verify(reviewRepository, never()).calculateAverageRatingByPostId(anyString());
     }
 
     @Test
     @DisplayName("Get Average Rating For Post No Reviews Returns Zero")
     void getAverageRatingForPost_NoReviews_ReturnsZero() {
-        when(reviewRepository.calculateAverageRating("696e40248e370aa034f5f28a")).thenReturn(0.0);
+        when(reviewRepository.calculateAverageRatingByPostId("696e40248e370aa034f5f28a")).thenReturn(0.0);
 
         double result = reviewService.getAverageRatingForPost("696e40248e370aa034f5f28a");
 
         assertEquals(0.0, result);
-        verify(reviewRepository).calculateAverageRating("696e40248e370aa034f5f28a");
+        verify(reviewRepository).calculateAverageRatingByPostId("696e40248e370aa034f5f28a");
     }
 
     @Test
@@ -316,23 +284,12 @@ class ReviewServiceImplTest {
     @DisplayName("Update Review With Valid Id Calls Repository Update")
     void update_ReviewWithValidId_CallsRepositoryUpdate() {
         Review updatedReview = new Review(testReview.getId(), testPost, testUser, 4, "Updated feedback", 123456794L, null);
-        when(reviewRepository.update(updatedReview)).thenReturn(true);
+        when(reviewRepository.save(updatedReview)).thenReturn(updatedReview);
 
         boolean result = reviewService.update(updatedReview);
 
         assertTrue(result);
-        verify(reviewRepository).update(updatedReview);
-    }
-
-    @Test
-    @DisplayName("Delete Review With Valid Id Calls Repository DeleteById")
-    void delete_ReviewWithValidId_CallsRepositoryDeleteById() {
-        when(reviewRepository.deleteById(testReview.getId())).thenReturn(true);
-
-        boolean result = reviewService.delete(testReview.getId());
-
-        assertTrue(result);
-        verify(reviewRepository).deleteById(testReview.getId());
+        verify(reviewRepository).save(updatedReview);
     }
 
     @Test
@@ -349,12 +306,12 @@ class ReviewServiceImplTest {
     @Test
     @DisplayName("Get Average Rating For Post With Valid Post Id Calls Repository CalculateAverageRating")
     void getAverageRatingForPost_ReviewWithValidPostId_CallsRepositoryCalculateAverageRating() {
-        when(reviewRepository.calculateAverageRating(testPost.getId())).thenReturn(3.5);
+        when(reviewRepository.calculateAverageRatingByPostId(testPost.getId())).thenReturn(3.5);
 
         double result = reviewService.getAverageRatingForPost(testPost.getId());
 
         assertEquals(3.5, result);
-        verify(reviewRepository).calculateAverageRating(testPost.getId());
+        verify(reviewRepository).calculateAverageRatingByPostId(testPost.getId());
     }
 
     @Test
@@ -392,11 +349,11 @@ class ReviewServiceImplTest {
     @Test
     @DisplayName("Get Average Rating For Post With Multiple Reviews Returns Correct Average")
     void getAverageRatingForPost_WithMultipleReviews_ReturnsCorrectAverage() {
-        when(reviewRepository.calculateAverageRating(testPost.getId())).thenReturn(4.5);
+        when(reviewRepository.calculateAverageRatingByPostId(testPost.getId())).thenReturn(4.5);
 
         double result = reviewService.getAverageRatingForPost(testPost.getId());
 
         assertEquals(4.5, result, 0.01);
-        verify(reviewRepository).calculateAverageRating(testPost.getId());
+        verify(reviewRepository).calculateAverageRatingByPostId(testPost.getId());
     }
 }

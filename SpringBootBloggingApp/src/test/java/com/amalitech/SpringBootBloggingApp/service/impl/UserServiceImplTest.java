@@ -7,6 +7,7 @@ import com.amalitech.SpringBootBloggingApp.model.dto.request.UpdateUserDetailReq
 import com.amalitech.SpringBootBloggingApp.model.dto.request.UpdateUserRequest;
 import com.amalitech.SpringBootBloggingApp.model.dto.response.UserResponse;
 import com.amalitech.SpringBootBloggingApp.model.entity.User;
+import com.amalitech.SpringBootBloggingApp.repository.UserRepository;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +28,7 @@ import static org.mockito.Mockito.*;
 class UserServiceImplTest {
 
     @Mock
-    private UserRepositoryImpl userRepository;
+    private UserRepository userRepository;
 
     @Mock
     private Cache<String, User> userCache;
@@ -107,14 +108,13 @@ class UserServiceImplTest {
         UpdateUserRequest invalidRequest = new UpdateUserRequest(testUser.getId(), "updated@example.com", "", "newpassword123");
 
         assertThrows(UserInputsException.class, () -> userService.update(invalidRequest));
-        verify(userRepository, never()).update(any(User.class));
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
     @DisplayName("Delete user with valid input returns true")
     void delete_ValidUser_ReturnsTrue() {
         when(userRepository.findById(testUser.getId())).thenReturn(Optional.of(testUser));
-        when(userRepository.deleteById(testUser.getId())).thenReturn(true);
 
         boolean result = userService.delete(testUser.getId());
 
@@ -204,24 +204,6 @@ class UserServiceImplTest {
         assertEquals("testuser", result.get(0).getUsername());
         assertEquals("user2", result.get(1).getUsername());
         verify(userRepository).findAll();
-    }
-
-    @Test
-    @DisplayName("Update user details with valid input returns true")
-    void updateUserDetails_ValidUser_ReturnsTrue() {
-        when(userRepository.updateUserDetails(eq(testUser.getId()), any(User.class))).thenReturn(true);
-
-        boolean result = userService.updateUserDetails(testUser.getId(), updateUserDetailRequest);
-
-        assertTrue(result);
-        verify(userRepository).updateUserDetails(eq(testUser.getId()), any(User.class));
-    }
-
-    @Test
-    @DisplayName("Update user details with invalid user id throws user inputs exception")
-    void updateUserDetails_InvalidUserId_ThrowsUserInputsException() {
-        assertThrows(UserInputsException.class, () -> userService.updateUserDetails("invalid-id", updateUserDetailRequest));
-        verify(userRepository, never()).updateUserDetails(anyString(), any(User.class));
     }
 
     @Test

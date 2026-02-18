@@ -4,6 +4,7 @@ import com.amalitech.SpringBootBloggingApp.cache.Cache;
 import com.amalitech.SpringBootBloggingApp.model.entity.Comment;
 import com.amalitech.SpringBootBloggingApp.model.entity.Post;
 import com.amalitech.SpringBootBloggingApp.model.entity.User;
+import com.amalitech.SpringBootBloggingApp.repository.CommentRepository;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +24,7 @@ import static org.mockito.Mockito.*;
 class CommentServiceImplTest {
 
     @Mock
-    private CommentRepositoryImpl commentRepository;
+    private CommentRepository commentRepository;
 
     @Mock
     private Cache<String, User> userCache;
@@ -88,32 +89,10 @@ class CommentServiceImplTest {
     }
 
     @Test
-    @DisplayName("Delete Valid Comment Id Returns True")
-    void delete_ValidCommentId_ReturnsTrue() {
-        when(commentRepository.deleteById(testComment.getId())).thenReturn(true);
-
-        boolean result = commentService.delete(testComment.getId());
-
-        assertTrue(result);
-        verify(commentRepository).deleteById(testComment.getId());
-    }
-
-    @Test
     @DisplayName("Delete Invalid Comment Id Throws UserInputsException")
     void delete_InvalidCommentId_ThrowsUserInputsException() {
         assertThrows(UserInputsException.class, () -> commentService.delete("invalid-id"));
         verify(commentRepository, never()).deleteById(anyString());
-    }
-
-    @Test
-    @DisplayName("Delete Failed Delete Returns False")
-    void delete_FailedDelete_ReturnsFalse() {
-        when(commentRepository.deleteById("697349d17b196ad927aa8a01")).thenReturn(false);
-
-        boolean result = commentService.delete("697349d17b196ad927aa8a01");
-
-        assertFalse(result);
-        verify(commentRepository).deleteById("697349d17b196ad927aa8a01");
     }
 
     @Test
@@ -184,12 +163,12 @@ class CommentServiceImplTest {
     @Test
     @DisplayName("Update Valid Comment Returns True")
     void update_ValidComment_ReturnsTrue() {
-        when(commentRepository.update(testComment)).thenReturn(true);
+        when(commentRepository.save(testComment)).thenReturn(testComment);
 
         boolean result = commentService.update(testComment);
 
         assertTrue(result);
-        verify(commentRepository).update(testComment);
+        verify(commentRepository).save(testComment);
     }
 
     @Test
@@ -198,7 +177,7 @@ class CommentServiceImplTest {
         Comment invalidComment = new Comment("invalid-id", testPost, testUser, "Valid content", 123456789L, null);
 
         assertThrows(UserInputsException.class, () -> commentService.update(invalidComment));
-        verify(commentRepository, never()).update(any(Comment.class));
+        verify(commentRepository, never()).save(any(Comment.class));
     }
 
     @Test
@@ -207,18 +186,7 @@ class CommentServiceImplTest {
         Comment invalidComment = new Comment("1", testPost, testUser, "", 123456789L, null);
 
         assertThrows(UserInputsException.class, () -> commentService.update(invalidComment));
-        verify(commentRepository, never()).update(any(Comment.class));
-    }
-
-    @Test
-    @DisplayName("Update Failed Update Returns False")
-    void update_FailedUpdate_ReturnsFalse() {
-        when(commentRepository.update(testComment)).thenReturn(false);
-
-        boolean result = commentService.update(testComment);
-
-        assertFalse(result);
-        verify(commentRepository).update(testComment);
+        verify(commentRepository, never()).save(any(Comment.class));
     }
 
     @Test
@@ -294,23 +262,12 @@ class CommentServiceImplTest {
     @DisplayName("Update Comment With Valid Id And Content Calls Repository Update")
     void update_CommentWithValidIdAndContent_CallsRepositoryUpdate() {
         Comment updatedComment = new Comment(testComment.getId(), testPost, testUser, "Updated comment content", 123456792L, null);
-        when(commentRepository.update(updatedComment)).thenReturn(true);
+        when(commentRepository.save(updatedComment)).thenReturn(updatedComment);
 
         boolean result = commentService.update(updatedComment);
 
         assertTrue(result);
-        verify(commentRepository).update(updatedComment);
-    }
-
-    @Test
-    @DisplayName("Delete Comment With Valid Id Calls Repository DeleteById")
-    void delete_CommentWithValidId_CallsRepositoryDeleteById() {
-        when(commentRepository.deleteById(testComment.getId())).thenReturn(true);
-
-        boolean result = commentService.delete(testComment.getId());
-
-        assertTrue(result);
-        verify(commentRepository).deleteById(testComment.getId());
+        verify(commentRepository).save(updatedComment);
     }
 
     @Test

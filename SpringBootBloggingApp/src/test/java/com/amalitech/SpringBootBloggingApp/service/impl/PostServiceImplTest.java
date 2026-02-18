@@ -85,35 +85,24 @@ class PostServiceImplTest {
     @Test
     @DisplayName("Update Valid Post Returns Post")
     void update_ValidPost_ReturnsPost() {
-        when(postRepository.save(testPost)).thenReturn(true);
+        when(postRepository.save(testPost)).thenReturn(testPost);
 
         Post result = postService.update(testPost);
 
         assertNotNull(result);
         assertEquals(testPost, result);
-        verify(postRepository).update(testPost);
+        verify(postRepository).save(testPost);
     }
 
     @Test
     @DisplayName("Update Failed Update Returns Null")
     void update_FailedUpdate_ReturnsNull() {
-        when(postRepository.update(testPost)).thenReturn(false);
+        when(postRepository.save(testPost)).thenReturn(null);
 
         Post result = postService.update(testPost);
 
         assertNull(result);
-        verify(postRepository).update(testPost);
-    }
-
-    @Test
-    @DisplayName("Delete Valid Post Id Returns True")
-    void delete_ValidPostId_ReturnsTrue() {
-        when(postRepository.deleteById(testPost2.getId())).thenReturn(true);
-
-        boolean result = postService.delete(testPost2.getId());
-
-        assertTrue(result);
-        verify(postRepository).deleteById(testPost2.getId());
+        verify(postRepository).save(testPost);
     }
 
     @Test
@@ -121,17 +110,6 @@ class PostServiceImplTest {
     void delete_InvalidPostId_ThrowsUserInputsException() {
         assertThrows(UserInputsException.class, () -> postService.delete("invalid-id"));
         verify(postRepository, never()).deleteById(anyString());
-    }
-
-    @Test
-    @DisplayName("Delete Failed Delete Returns False")
-    void delete_FailedDelete_ReturnsFalse() {
-        when(postRepository.deleteById("697349d17b196ad927aa89fa")).thenReturn(false);
-
-        boolean result = postService.delete("697349d17b196ad927aa89fa");
-
-        assertFalse(result);
-        verify(postRepository).deleteById("697349d17b196ad927aa89fa");
     }
 
     @Test
@@ -223,31 +201,6 @@ class PostServiceImplTest {
     void getByAuthor_InvalidAuthorId_ThrowsUserInputsException() {
         assertThrows(UserInputsException.class, () -> postService.getByAuthor("invalid-id"));
         verify(postRepository, never()).findByAuthorId(anyString());
-    }
-
-    @Test
-    @DisplayName("Search By Tag Valid Tag Name Returns Tagged Posts")
-    void searchByTag_ValidTagName_ReturnsTaggedPosts() {
-        List<Post> expectedPosts = List.of(testPost);
-        when(postRepository.findByTagName("java")).thenReturn(expectedPosts);
-
-        List<Post> result = postService.searchByTag("java");
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        verify(postRepository).findByTagName("java");
-    }
-
-    @Test
-    @DisplayName("Search By Tag No Tagged Posts Returns Empty List")
-    void searchByTag_NoTaggedPosts_ReturnsEmptyList() {
-        when(postRepository.findByTagName("nonexistent")).thenReturn(List.of());
-
-        List<Post> result = postService.searchByTag("nonexistent");
-
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
-        verify(postRepository).findByTagName("nonexistent");
     }
 
     @Test

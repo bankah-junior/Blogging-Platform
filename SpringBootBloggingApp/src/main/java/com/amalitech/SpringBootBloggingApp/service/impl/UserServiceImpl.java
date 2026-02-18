@@ -10,7 +10,6 @@ import com.amalitech.SpringBootBloggingApp.model.dto.response.UserResponse;
 import com.amalitech.SpringBootBloggingApp.model.entity.User;
 import com.amalitech.SpringBootBloggingApp.repository.UserRepository;
 import com.amalitech.SpringBootBloggingApp.service.UserService;
-
 import com.amalitech.SpringBootBloggingApp.util.JwtUtilManual;
 import com.amalitech.SpringBootBloggingApp.util.ValidationUtil;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;

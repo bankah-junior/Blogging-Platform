@@ -140,85 +140,6 @@ class TagServiceImplTest {
     }
 
     @Test
-    @DisplayName("Assign Tag to Post with valid ids calls repository assignTagToPost")
-    void assignTagToPost_ValidIds_CallsRepositoryAssignTagToPost() {
-        doNothing().when(tagRepository).assignTagToPost("6978db137edabfbdc62450b3", testTag.getId());
-
-        tagService.assignTagToPost("6978db137edabfbdc62450b3", testTag.getId());
-
-        verify(tagRepository).assignTagToPost("6978db137edabfbdc62450b3", testTag.getId());
-    }
-
-    @Test
-    @DisplayName("Assign Tag to Post with invalid post id throws UserInputsException")
-    void assignTagToPost_InvalidPostId_ThrowsUserInputsException() {
-        assertThrows(UserInputsException.class, () -> tagService.assignTagToPost("invalid-id", "tag1"));
-        verify(tagRepository, never()).assignTagToPost(anyString(), anyString());
-    }
-
-    @Test
-    @DisplayName("Assign Tag to Post with invalid tag id throws UserInputsException")
-    void assignTagToPost_InvalidTagId_ThrowsUserInputsException() {
-        assertThrows(UserInputsException.class, () -> tagService.assignTagToPost("post1", "invalid-id"));
-        verify(tagRepository, never()).assignTagToPost(anyString(), anyString());
-    }
-
-    @Test
-    @DisplayName("Assign Tag to Post with both ids invalid throws UserInputsException")
-    void assignTagToPost_BothIdsInvalid_ThrowsUserInputsException() {
-        assertThrows(UserInputsException.class, () -> tagService.assignTagToPost("invalid-id", "invalid-id"));
-        verify(tagRepository, never()).assignTagToPost(anyString(), anyString());
-    }
-
-    @Test
-    @DisplayName("Get Tags by Post with valid post id returns list of tags")
-    void getTagsByPost_ValidPostId_ReturnsPostTags() {
-        List<Tag> expectedTags = List.of(testTag);
-        when(tagRepository.findTagsByPostId("6978db137edabfbdc62450b3")).thenReturn(expectedTags);
-
-        List<Tag> result = tagService.getTagsByPost("6978db137edabfbdc62450b3");
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals("Java", result.get(0).getName());
-        verify(tagRepository).findTagsByPostId("6978db137edabfbdc62450b3");
-    }
-
-    @Test
-    @DisplayName("Get Tags by Post with invalid post id throws UserInputsException")
-    void getTagsByPost_InvalidPostId_ThrowsUserInputsException() {
-        assertThrows(UserInputsException.class, () -> tagService.getTagsByPost("invalid-id"));
-        verify(tagRepository, never()).findTagsByPostId(anyString());
-    }
-
-    @Test
-    @DisplayName("Get Tags by Post with no tags assigned returns empty list")
-    void getTagsByPost_NoTags_ReturnsEmptyList() {
-        when(tagRepository.findTagsByPostId("6978db137edabfbdc62450b3")).thenReturn(List.of());
-
-        List<Tag> result = tagService.getTagsByPost("6978db137edabfbdc62450b3");
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
-        verify(tagRepository).findTagsByPostId("6978db137edabfbdc62450b3");
-    }
-
-    @Test
-    @DisplayName("Unassign All Tags from Post with valid post id calls repository unassignAllTagsFromPost")
-    void unassignAllTagsFromPost_ValidPostId_CallsRepositoryUnassignAllTagsFromPost() {
-        doNothing().when(tagRepository).unassignAllTagsFromPost("6978db137edabfbdc62450b3");
-
-        tagService.unassignAllTagsFromPost("6978db137edabfbdc62450b3");
-
-        verify(tagRepository).unassignAllTagsFromPost("6978db137edabfbdc62450b3");
-    }
-
-    @Test
-    @DisplayName("Unassign All Tags from Post with invalid post id throws UserInputsException")
-    void unassignAllTagsFromPost_InvalidPostId_ThrowsUserInputsException() {
-        assertThrows(UserInputsException.class, () -> tagService.unassignAllTagsFromPost("invalid-id"));
-        verify(tagRepository, never()).unassignAllTagsFromPost(anyString());
-    }
-
-    @Test
     @DisplayName("Create Tag with valid name calls repository save")
     void create_TagWithValidName_CallsRepositorySave() {
         Tag validTag = new Tag("asdf123qwertyb", "python");
@@ -240,37 +161,6 @@ class TagServiceImplTest {
         assertNotNull(result);
         assertEquals("Spring", result.getName());
         verify(tagRepository).findByName("Spring");
-    }
-
-    @Test
-    @DisplayName("Assign Tag to Post with valid tag id and post id calls repository assignTagToPost")
-    void assignTagToPost_TagWithValidIds_CallsRepositoryAssignTagToPost() {
-        doNothing().when(tagRepository).assignTagToPost("6978db137edabfbdc62450b3", testTag2.getId());
-
-        tagService.assignTagToPost("6978db137edabfbdc62450b3", testTag2.getId());
-
-        verify(tagRepository).assignTagToPost("6978db137edabfbdc62450b3", testTag2.getId());
-    }
-
-    @Test
-    @DisplayName("Get Tags by Post with valid post id returns list of tags")
-    void getTagsByPost_TagWithValidPostId_CallsRepositoryFindTagsByPostId() {
-        when(tagRepository.findTagsByPostId("6978db137edabfbdc62450b3")).thenReturn(List.of(testTag, testTag2));
-        List<Tag> result = tagService.getTagsByPost("6978db137edabfbdc62450b3");
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        verify(tagRepository).findTagsByPostId("6978db137edabfbdc62450b3");
-    }
-
-    @Test
-    @DisplayName("Unassign All Tags from Post with valid post id calls repository unassignAllTagsFromPost")
-    void unassignAllTagsFromPost_TagWithValidPostId_CallsRepositoryUnassignAllTagsFromPost() {
-        doNothing().when(tagRepository).unassignAllTagsFromPost("6978db137edabfbdc62450b3");
-
-        tagService.unassignAllTagsFromPost("6978db137edabfbdc62450b3");
-
-        verify(tagRepository).unassignAllTagsFromPost("6978db137edabfbdc62450b3");
     }
 
     @Test

@@ -8,7 +8,6 @@ import com.amalitech.SpringBootBloggingApp.model.entity.User;
 import com.amalitech.SpringBootBloggingApp.repository.PostRepository;
 import com.amalitech.SpringBootBloggingApp.repository.UserRepository;
 import com.amalitech.SpringBootBloggingApp.service.PostService;
-
 import com.amalitech.SpringBootBloggingApp.util.ValidationUtil;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
 import org.springframework.cache.annotation.CacheEvict;

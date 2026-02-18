@@ -6,7 +6,6 @@ import com.amalitech.SpringBootBloggingApp.model.dto.response.PageResponse;
 import com.amalitech.SpringBootBloggingApp.model.dto.response.PostTagResponse;
 import com.amalitech.SpringBootBloggingApp.model.entity.PostTag;
 import com.amalitech.SpringBootBloggingApp.service.PostTagService;
-import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
