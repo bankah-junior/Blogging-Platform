@@ -1,10 +1,8 @@
 package com.amalitech.SpringBootBloggingApp.service.impl;
 
-import com.amalitech.SpringBootBloggingApp.cache.Cache;
 import com.amalitech.SpringBootBloggingApp.model.dto.request.CreateTagRequest;
 import com.amalitech.SpringBootBloggingApp.model.dto.response.PageResponse;
 import com.amalitech.SpringBootBloggingApp.model.entity.Tag;
-import com.amalitech.SpringBootBloggingApp.model.entity.User;
 import com.amalitech.SpringBootBloggingApp.repository.PostTagRepository;
 import com.amalitech.SpringBootBloggingApp.repository.TagRepository;
 import com.amalitech.SpringBootBloggingApp.service.TagService;
@@ -23,12 +21,10 @@ import java.util.stream.Collectors;
 public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
-    private final Cache<String, User> userCache;
 
-    public TagServiceImpl(TagRepository tagRepository, PostTagRepository postTagRepository, Cache<String, User> userCache) {
+    public TagServiceImpl(TagRepository tagRepository, PostTagRepository postTagRepository) {
         this.tagRepository = tagRepository;
         this.postTagRepository = postTagRepository;
-        this.userCache = userCache;
     }
 
     @Override

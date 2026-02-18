@@ -1,6 +1,5 @@
 package com.amalitech.SpringBootBloggingApp.service.impl;
 
-import com.amalitech.SpringBootBloggingApp.cache.Cache;
 import com.amalitech.SpringBootBloggingApp.model.dto.request.CreateReviewRequest;
 import com.amalitech.SpringBootBloggingApp.model.dto.response.PageResponse;
 import com.amalitech.SpringBootBloggingApp.model.entity.Post;
@@ -26,13 +25,11 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
-    private final Cache<String, User> userCache;
 
-    public ReviewServiceImpl(ReviewRepository reviewRepository, UserRepository userRepository, PostRepository postRepository, Cache<String, User> userCache) {
+    public ReviewServiceImpl(ReviewRepository reviewRepository, UserRepository userRepository, PostRepository postRepository) {
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.postRepository = postRepository;
-        this.userCache = userCache;
     }
 
     @Override

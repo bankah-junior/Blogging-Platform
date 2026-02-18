@@ -1,6 +1,5 @@
 package com.amalitech.SpringBootBloggingApp.service.impl;
 
-import com.amalitech.SpringBootBloggingApp.cache.Cache;
 import com.amalitech.SpringBootBloggingApp.model.dto.request.LoginRequest;
 import com.amalitech.SpringBootBloggingApp.model.dto.request.RegisterRequest;
 import com.amalitech.SpringBootBloggingApp.model.dto.request.UpdateUserDetailRequest;
@@ -28,11 +27,9 @@ import static com.amalitech.SpringBootBloggingApp.util.PasswordUtil.verifyPasswo
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final Cache<String, User> userCache;
 
-    public UserServiceImpl(UserRepository userRepository, Cache<String, User> userCache) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.userCache = userCache;
     }
 
     @Override
@@ -57,9 +54,7 @@ public class UserServiceImpl implements UserService {
                 null
         );
         User saved = userRepository.save(registerUser);
-        if (saved != null) {
-            userCache.put(saved.getId(), saved);
-        }
+
         String token = JwtUtilManual.generateToken(saved.getId(), user.getEmail());
         return new UserResponse(
                 saved.getId(),
@@ -121,7 +116,6 @@ public class UserServiceImpl implements UserService {
         );
         User saved = userRepository.save(updateUser);
         if (saved != null) {
-            userCache.put(saved.getId(), saved);
             String token = JwtUtilManual.generateToken(saved.getId(), saved.getEmail());
             return new UserResponse(
                     saved.getId(),
@@ -143,7 +137,6 @@ public class UserServiceImpl implements UserService {
             throw new UserInputsException("User not found");
         }
         userRepository.deleteById(userId);
-        userCache.remove(userId);
         return true;
     }
 
@@ -151,13 +144,9 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Cacheable(value = "users", key = "#userId")
     public UserResponse getById(String userId) {
-        User foundUser = userCache.get(userId);
+        User foundUser = userRepository.findById(userId).orElse(null);
         if (foundUser == null) {
-            foundUser = userRepository.findById(userId).orElse(null);
-            if (foundUser == null) {
-                throw new UserInputsException("User not found");
-            }
-            userCache.put(foundUser.getId(), foundUser);
+            throw new UserInputsException("User not found");
         }
         String token = JwtUtilManual.generateToken(foundUser.getId(), foundUser.getEmail());
         return new UserResponse(
@@ -174,13 +163,9 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Cacheable(value = "users", key = "#email")
     public UserResponse getByEmail(String email) {
-        User foundUser = userCache.get(email);
+        User foundUser = userRepository.findByEmail(email).orElse(null);
         if (foundUser == null) {
-            foundUser = userRepository.findByEmail(email).orElse(null);
-            if (foundUser == null) {
-                throw new UserInputsException("User not found");
-            }
-            userCache.put(foundUser.getEmail(), foundUser);
+            throw new UserInputsException("User not found");
         }
         String token = JwtUtilManual.generateToken(foundUser.getId(), foundUser.getEmail());
         return new UserResponse(
@@ -242,7 +227,6 @@ public class UserServiceImpl implements UserService {
         
         User saved = userRepository.save(existingUser);
         if (saved != null) {
-            userCache.put(saved.getId(), saved);
             return true;
         }
         return false;
@@ -255,13 +239,9 @@ public class UserServiceImpl implements UserService {
         if (!ValidationUtil.isValidObjectId(userId)) {
             throw new UserInputsException("User ID is not valid");
         }
-        User user = userCache.get(userId);
+        User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
-            user = userRepository.findById(userId).orElse(null);
-            if (user == null) {
-                throw new UserInputsException("User not found");
-            }
-            userCache.put(user.getId(), user);
+            throw new UserInputsException("User not found");
         }
         if (user == null || !verifyPassword(oldPassword, user.getPasswordHash())) {
             throw new UserInputsException("Old password is not valid");
@@ -270,7 +250,6 @@ public class UserServiceImpl implements UserService {
         user.setUpdatedAt(System.currentTimeMillis());
         User saved = userRepository.save(user);
         if (saved != null) {
-            userCache.put(saved.getId(), saved);
             return true;
         }
         return false;

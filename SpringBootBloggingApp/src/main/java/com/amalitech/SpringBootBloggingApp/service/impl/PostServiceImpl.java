@@ -1,6 +1,5 @@
 package com.amalitech.SpringBootBloggingApp.service.impl;
 
-import com.amalitech.SpringBootBloggingApp.cache.Cache;
 import com.amalitech.SpringBootBloggingApp.model.dto.request.CreatePostRequest;
 import com.amalitech.SpringBootBloggingApp.model.dto.response.PageResponse;
 import com.amalitech.SpringBootBloggingApp.model.entity.Post;
@@ -23,12 +22,10 @@ import java.util.List;
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final Cache<String, User> userCache;
 
-    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, Cache<String, User> userCache) {
+    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
-        this.userCache = userCache;
     }
 
     @Override

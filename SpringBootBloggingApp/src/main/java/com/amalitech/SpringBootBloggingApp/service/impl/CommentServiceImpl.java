@@ -1,6 +1,5 @@
 package com.amalitech.SpringBootBloggingApp.service.impl;
 
-import com.amalitech.SpringBootBloggingApp.cache.Cache;
 import com.amalitech.SpringBootBloggingApp.model.dto.request.CreateCommentRequest;
 import com.amalitech.SpringBootBloggingApp.model.dto.response.PageResponse;
 import com.amalitech.SpringBootBloggingApp.model.entity.Comment;
@@ -27,13 +26,11 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
-    private final Cache<String, User> userCache;
 
-    public CommentServiceImpl(CommentRepository commentRepository, UserRepository userRepository, PostRepository postRepository, Cache<String, User> userCache) {
+    public CommentServiceImpl(CommentRepository commentRepository, UserRepository userRepository, PostRepository postRepository) {
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.postRepository = postRepository;
-        this.userCache = userCache;
     }
 
     @Override
