@@ -1,0 +1,814 @@
+{
+  "info": {
+    "name": "SpringBoot Blogging App",
+    "_postman_id": "blogging-app-collection",
+    "description": "Complete API collection for the SpringBoot Blogging Platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080", "type": "string" },
+    { "key": "accessToken", "value": "", "type": "string" },
+    { "key": "refreshToken", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"johndoe\",\n  \"email\": \"johndoe@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.accessToken) {",
+                  "  pm.collectionVariables.set('accessToken', json.accessToken);",
+                  "  pm.collectionVariables.set('refreshToken', json.refreshToken);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"johndoe@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/auth/refresh", "host": ["{{baseUrl}}"], "path": ["auth", "refresh"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Validate Token",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/auth/validate", "host": ["{{baseUrl}}"], "path": ["auth", "validate"] }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/auth/logout", "host": ["{{baseUrl}}"], "path": ["auth", "logout"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users?page=0&size=20",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "users"],
+              "query": [{ "key": "page", "value": "0" }, { "key": "size", "value": "20" }]
+            }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/v1/users/:userId", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", ":userId"], "variable": [{ "key": "userId", "value": "USER_ID_HERE" }] }
+          }
+        },
+        {
+          "name": "Get User by Email",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/v1/users/email/:email", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", "email", ":email"], "variable": [{ "key": "email", "value": "johndoe@example.com" }] }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/v1/users/:userId", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", ":userId"], "variable": [{ "key": "userId", "value": "USER_ID_HERE" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"newusername\",\n  \"email\": \"newemail@example.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/users/:userId", "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", ":userId"], "variable": [{ "key": "userId", "value": "USER_ID_HERE" }] }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/:userId/change-password?oldPassword=oldpass&newPassword=newpass123",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "users", ":userId", "change-password"],
+              "variable": [{ "key": "userId", "value": "USER_ID_HERE" }],
+              "query": [{ "key": "oldPassword", "value": "oldpass" }, { "key": "newPassword", "value": "newpass123" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Posts",
+      "item": [
+        {
+          "name": "Create Post",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/v1/posts/create", "host": ["{{baseUrl}}"], "path": ["api", "v1", "posts", "create"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"authorId\": \"AUTHOR_ID_HERE\",\n  \"title\": \"My First Blog Post\",\n  \"content\": \"This is the content of my first blog post.\",\n  \"published\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Get All Posts",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/all?page=0&size=20",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "posts", "all"],
+              "query": [{ "key": "page", "value": "0" }, { "key": "size", "value": "20" }]
+            }
+          }
+        },
+        {
+          "name": "Get Post by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/v1/posts/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "posts", ":id"], "variable": [{ "key": "id", "value": "POST_ID_HERE" }] }
+          }
+        },
+        {
+          "name": "Update Post",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/v1/posts/update", "host": ["{{baseUrl}}"], "path": ["api", "v1", "posts", "update"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"POST_ID_HERE\",\n  \"title\": \"Updated Title\",\n  \"content\": \"Updated content.\",\n  \"published\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Post",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/posts/delete/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "posts", "delete", ":id"], "variable": [{ "key": "id", "value": "POST_ID_HERE" }] }
+          }
+        },
+        {
+          "name": "Get Posts Sorted by Date",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/sort/date?ascending=false&page=0&size=20",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "posts", "sort", "date"],
+              "query": [{ "key": "ascending", "value": "false" }, { "key": "page", "value": "0" }, { "key": "size", "value": "20" }]
+            }
+          }
+        },
+        {
+          "name": "Get Posts Sorted by Title",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/sort/title?ascending=true&page=0&size=20",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "posts", "sort", "title"],
+              "query": [{ "key": "ascending", "value": "true" }, { "key": "page", "value": "0" }, { "key": "size", "value": "20" }]
+            }
+          }
+        },
+        {
+          "name": "Get Posts by Author",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/author/:authorId?page=0&size=20",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "posts", "author", ":authorId"],
+              "variable": [{ "key": "authorId", "value": "AUTHOR_ID_HERE" }],
+              "query": [{ "key": "page", "value": "0" }, { "key": "size", "value": "20" }]
+            }
+          }
+        },
+        {
+          "name": "Search Posts by Title",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/v1/posts/search/title/:keyword", "host": ["{{baseUrl}}"], "path": ["api", "v1", "posts", "search", "title", ":keyword"], "variable": [{ "key": "keyword", "value": "spring" }] }
+          }
+        },
+        {
+          "name": "Search Posts by Tag",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/v1/posts/search/tag/:tagName", "host": ["{{baseUrl}}"], "path": ["api", "v1", "posts", "search", "tag", ":tagName"], "variable": [{ "key": "tagName", "value": "java" }] }
+          }
+        },
+        {
+          "name": "Get Posts by Published Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/published/:published?page=0&size=20",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "posts", "published", ":published"],
+              "variable": [{ "key": "published", "value": "true" }],
+              "query": [{ "key": "page", "value": "0" }, { "key": "size", "value": "20" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Comments",
+      "item": [
+        {
+          "name": "Create Comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/v1/comments/create", "host": ["{{baseUrl}}"], "path": ["api", "v1", "comments", "create"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"postId\": \"POST_ID_HERE\",\n  \"userId\": \"USER_ID_HERE\",\n  \"content\": \"Great post!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get All Comments",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/comments/all?page=0&size=20",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "comments", "all"],
+              "query": [{ "key": "page", "value": "0" }, { "key": "size", "value": "20" }]
+            }
+          }
+        },
+        {
+          "name": "Get Comment by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/v1/comments/:commentId", "host": ["{{baseUrl}}"], "path": ["api", "v1", "comments", ":commentId"], "variable": [{ "key": "commentId", "value": "COMMENT_ID_HERE" }] }
+          }
+        },
+        {
+          "name": "Get Comments by User",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/comments/user/:userId?page=0&size=20",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "comments", "user", ":userId"],
+              "variable": [{ "key": "userId", "value": "USER_ID_HERE" }],
+              "query": [{ "key": "page", "value": "0" }, { "key": "size", "value": "20" }]
+            }
+          }
+        },
+        {
+          "name": "Get Comments by Post",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/comments/post/:postId?page=0&size=20",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "comments", "post", ":postId"],
+              "variable": [{ "key": "postId", "value": "POST_ID_HERE" }],
+              "query": [{ "key": "page", "value": "0" }, { "key": "size", "value": "20" }]
+            }
+          }
+        },
+        {
+          "name": "Update Comment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/v1/comments/update", "host": ["{{baseUrl}}"], "path": ["api", "v1", "comments", "update"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"COMMENT_ID_HERE\",\n  \"content\": \"Updated comment content.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Comment",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/comments/delete/:commentId", "host": ["{{baseUrl}}"], "path": ["api", "v1", "comments", "delete", ":commentId"], "variable": [{ "key": "commentId", "value": "COMMENT_ID_HERE" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tags",
+      "item": [
+        {
+          "name": "Get All Tags",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tags/all?page=0&size=20",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "tags", "all"],
+              "query": [{ "key": "page", "value": "0" }, { "key": "size", "value": "20" }]
+            }
+          }
+        },
+        {
+          "name": "Create Tag",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/v1/tags/create", "host": ["{{baseUrl}}"], "path": ["api", "v1", "tags", "create"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"java\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Tag by Name",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/v1/tags/name/:name", "host": ["{{baseUrl}}"], "path": ["api", "v1", "tags", "name", ":name"], "variable": [{ "key": "name", "value": "java" }] }
+          }
+        },
+        {
+          "name": "Assign Tag to Post",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tags/:postId/assign/:tagId",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "tags", ":postId", "assign", ":tagId"],
+              "variable": [{ "key": "postId", "value": "POST_ID_HERE" }, { "key": "tagId", "value": "TAG_ID_HERE" }]
+            }
+          }
+        },
+        {
+          "name": "Unassign Tag from Post",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tags/:postId/unassign/:tagId",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "tags", ":postId", "unassign", ":tagId"],
+              "variable": [{ "key": "postId", "value": "POST_ID_HERE" }, { "key": "tagId", "value": "TAG_ID_HERE" }]
+            }
+          }
+        },
+        {
+          "name": "Get Tags Assigned to Post",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/v1/tags/:postId/assigned", "host": ["{{baseUrl}}"], "path": ["api", "v1", "tags", ":postId", "assigned"], "variable": [{ "key": "postId", "value": "POST_ID_HERE" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reviews",
+      "item": [
+        {
+          "name": "Create Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/v1/reviews/create", "host": ["{{baseUrl}}"], "path": ["api", "v1", "reviews", "create"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"postId\": \"POST_ID_HERE\",\n  \"userId\": \"USER_ID_HERE\",\n  \"rating\": 4,\n  \"feedback\": \"Very informative post!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get All Reviews",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reviews?page=0&size=20",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "reviews"],
+              "query": [{ "key": "page", "value": "0" }, { "key": "size", "value": "20" }]
+            }
+          }
+        },
+        {
+          "name": "Update Review",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/v1/reviews/update", "host": ["{{baseUrl}}"], "path": ["api", "v1", "reviews", "update"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"REVIEW_ID_HERE\",\n  \"rating\": 5,\n  \"feedback\": \"Excellent post!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Review",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/reviews/delete/:reviewId", "host": ["{{baseUrl}}"], "path": ["api", "v1", "reviews", "delete", ":reviewId"], "variable": [{ "key": "reviewId", "value": "REVIEW_ID_HERE" }] }
+          }
+        },
+        {
+          "name": "Get Reviews by Post",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reviews/post/:postId?page=0&size=20",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "reviews", "post", ":postId"],
+              "variable": [{ "key": "postId", "value": "POST_ID_HERE" }],
+              "query": [{ "key": "page", "value": "0" }, { "key": "size", "value": "20" }]
+            }
+          }
+        },
+        {
+          "name": "Get Average Rating for Post",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/v1/reviews/post/:postId/average-rating", "host": ["{{baseUrl}}"], "path": ["api", "v1", "reviews", "post", ":postId", "average-rating"], "variable": [{ "key": "postId", "value": "POST_ID_HERE" }] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Post Tags",
+      "item": [
+        {
+          "name": "Create Post-Tag Relationship",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/post-tags/create", "host": ["{{baseUrl}}"], "path": ["api", "v1", "post-tags", "create"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"postId\": \"POST_ID_HERE\",\n  \"tagId\": \"TAG_ID_HERE\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get All Post-Tag Relationships",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/post-tags/all?page=0&size=20",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "post-tags", "all"],
+              "query": [{ "key": "page", "value": "0" }, { "key": "size", "value": "20" }]
+            }
+          }
+        },
+        {
+          "name": "Get Post-Tags by Post",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/v1/post-tags/post/:postId", "host": ["{{baseUrl}}"], "path": ["api", "v1", "post-tags", "post", ":postId"], "variable": [{ "key": "postId", "value": "POST_ID_HERE" }] }
+          }
+        },
+        {
+          "name": "Get Post-Tags by Tag",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/v1/post-tags/tag/:tagId", "host": ["{{baseUrl}}"], "path": ["api", "v1", "post-tags", "tag", ":tagId"], "variable": [{ "key": "tagId", "value": "TAG_ID_HERE" }] }
+          }
+        },
+        {
+          "name": "Assign Tag to Post",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/post-tags/:postId/assign/:tagId",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "post-tags", ":postId", "assign", ":tagId"],
+              "variable": [{ "key": "postId", "value": "POST_ID_HERE" }, { "key": "tagId", "value": "TAG_ID_HERE" }]
+            }
+          }
+        },
+        {
+          "name": "Unassign Tag from Post",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/post-tags/:postId/unassign/:tagId",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "post-tags", ":postId", "unassign", ":tagId"],
+              "variable": [{ "key": "postId", "value": "POST_ID_HERE" }, { "key": "tagId", "value": "TAG_ID_HERE" }]
+            }
+          }
+        },
+        {
+          "name": "Unassign All Tags from Post",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/api/v1/post-tags/:postId/unassign-all", "host": ["{{baseUrl}}"], "path": ["api", "v1", "post-tags", ":postId", "unassign-all"], "variable": [{ "key": "postId", "value": "POST_ID_HERE" }] }
+          }
+        },
+        {
+          "name": "Check Post-Tag Exists",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/post-tags/:postId/exists/:tagId",
+              "host": ["{{baseUrl}}"], "path": ["api", "v1", "post-tags", ":postId", "exists", ":tagId"],
+              "variable": [{ "key": "postId", "value": "POST_ID_HERE" }, { "key": "tagId", "value": "TAG_ID_HERE" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Get All Roles",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/roles", "host": ["{{baseUrl}}"], "path": ["api", "admin", "roles"] }
+          }
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/admin/roles", "host": ["{{baseUrl}}"], "path": ["api", "admin", "roles"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"AUTHOR\",\n  \"description\": \"Can create and edit posts\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get User Roles",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/admin/users/:userId/roles", "host": ["{{baseUrl}}"], "path": ["api", "admin", "users", ":userId", "roles"], "variable": [{ "key": "userId", "value": "USER_ID_HERE" }] }
+          }
+        },
+        {
+          "name": "Assign Role to User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/:userId/roles/:roleName",
+              "host": ["{{baseUrl}}"], "path": ["api", "admin", "users", ":userId", "roles", ":roleName"],
+              "variable": [{ "key": "userId", "value": "USER_ID_HERE" }, { "key": "roleName", "value": "AUTHOR" }]
+            }
+          }
+        },
+        {
+          "name": "Remove Role from User",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/users/:userId/roles/:roleName",
+              "host": ["{{baseUrl}}"], "path": ["api", "admin", "users", ":userId", "roles", ":roleName"],
+              "variable": [{ "key": "userId", "value": "USER_ID_HERE" }, { "key": "roleName", "value": "AUTHOR" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Author",
+      "item": [
+        {
+          "name": "Author Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/author/dashboard", "host": ["{{baseUrl}}"], "path": ["api", "author", "dashboard"] }
+          }
+        },
+        {
+          "name": "Create Post (Author)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/author/posts", "host": ["{{baseUrl}}"], "path": ["api", "author", "posts"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"My Post\",\n  \"content\": \"Post content here.\",\n  \"published\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Post (Author)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/author/posts/:postId", "host": ["{{baseUrl}}"], "path": ["api", "author", "posts", ":postId"], "variable": [{ "key": "postId", "value": "POST_ID_HERE" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Title\",\n  \"content\": \"Updated content.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Post (Admin only)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/author/posts/:postId", "host": ["{{baseUrl}}"], "path": ["api", "author", "posts", ":postId"], "variable": [{ "key": "postId", "value": "POST_ID_HERE" }] }
+          }
+        },
+        {
+          "name": "Author Analytics",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/author/analytics", "host": ["{{baseUrl}}"], "path": ["api", "author", "analytics"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reader",
+      "item": [
+        {
+          "name": "Reader Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/reader/dashboard", "host": ["{{baseUrl}}"], "path": ["api", "reader", "dashboard"] }
+          }
+        },
+        {
+          "name": "Like Post",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/reader/posts/:postId/like", "host": ["{{baseUrl}}"], "path": ["api", "reader", "posts", ":postId", "like"], "variable": [{ "key": "postId", "value": "POST_ID_HERE" }] }
+          }
+        },
+        {
+          "name": "Comment on Post",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/reader/posts/:postId/comment", "host": ["{{baseUrl}}"], "path": ["api", "reader", "posts", ":postId", "comment"], "variable": [{ "key": "postId", "value": "POST_ID_HERE" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"This is a great post!\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Save Post to Favorites",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/reader/posts/:postId/save", "host": ["{{baseUrl}}"], "path": ["api", "reader", "posts", ":postId", "save"], "variable": [{ "key": "postId", "value": "POST_ID_HERE" }] }
+          }
+        },
+        {
+          "name": "Get Favorites",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/reader/favorites", "host": ["{{baseUrl}}"], "path": ["api", "reader", "favorites"] }
+          }
+        },
+        {
+          "name": "Get Reading History",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/reader/reading-history", "host": ["{{baseUrl}}"], "path": ["api", "reader", "reading-history"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Security Audit",
+      "item": [
+        {
+          "name": "Test Authentication",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/security/test", "host": ["{{baseUrl}}"], "path": ["api", "security", "test"] }
+          }
+        },
+        {
+          "name": "Get Security Report",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/security/audit/report", "host": ["{{baseUrl}}"], "path": ["api", "security", "audit", "report"] }
+          }
+        },
+        {
+          "name": "Get Recent Security Events",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/security/audit/events?limit=50",
+              "host": ["{{baseUrl}}"], "path": ["api", "security", "audit", "events"],
+              "query": [{ "key": "limit", "value": "50" }]
+            }
+          }
+        },
+        {
+          "name": "Get Login Attempts by Email",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/api/security/audit/login-attempts/:email", "host": ["{{baseUrl}}"], "path": ["api", "security", "audit", "login-attempts", ":email"], "variable": [{ "key": "email", "value": "johndoe@example.com" }] }
+          }
+        },
+        {
+          "name": "Check Account Locked",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/security/audit/locked-accounts?email=johndoe@example.com",
+              "host": ["{{baseUrl}}"], "path": ["api", "security", "audit", "locked-accounts"],
+              "query": [{ "key": "email", "value": "johndoe@example.com" }]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
