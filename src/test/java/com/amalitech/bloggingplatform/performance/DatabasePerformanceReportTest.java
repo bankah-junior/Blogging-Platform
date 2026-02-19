@@ -7,10 +7,17 @@ import com.amalitech.bloggingplatform.utils.MongoDBConnection;
 import com.mongodb.client.MongoDatabase;
 import org.junit.jupiter.api.*;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Integration performance report for all MongoDB DAO operations.
@@ -439,6 +446,22 @@ class DatabasePerformanceReportTest {
         String timestamp = LocalDateTime.now()
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
+        long passed  = results.stream().filter(r -> r[2].startsWith("PASS")).count();
+        long failed  = results.stream().filter(r -> r[2].startsWith("FAIL")).count();
+        long totalMs = results.stream()
+                .mapToLong(r -> Long.parseLong(r[1].replace(" ms", "").trim()))
+                .sum();
+        long avgMs = results.isEmpty() ? 0 : totalMs / results.size();
+
+        printConsoleReport(timestamp, passed, failed, totalMs, avgMs);
+        writeMarkdownReport(timestamp, passed, failed, totalMs, avgMs);
+    }
+
+    // ── Console (ASCII table) ─────────────────────────────────────────────────
+
+    private static void printConsoleReport(String timestamp,
+                                           long passed, long failed,
+                                           long totalMs, long avgMs) {
         String border = "+----------------------------------------------------------+---------------+----------------------------------+";
         String fmt    = "| %-56s | %13s | %-32s |%n";
 
@@ -450,22 +473,17 @@ class DatabasePerformanceReportTest {
         System.out.printf( "|  %-88s|%n", " Collections: users | posts | comments | reviews | tags | post_tags");
         System.out.println("+==========================================================================================+");
         System.out.println();
-
-        // Section headers
-        String[] sections = {"USER", "POST", "COMMENT", "REVIEW", "TAG", "DELETE"};
-        String[] prefixes  = {"[User]", "[Post]", "[Comment]", "[Review]", "[Tag]", null};
-
         System.out.println(border);
         System.out.printf(fmt, "Operation", "Duration", "Status");
         System.out.println(border);
 
         String currentSection = "";
         for (String[] row : results) {
-            String sectionLabel = resolveSectionLabel(row[0]);
-            if (!sectionLabel.equals(currentSection)) {
-                currentSection = sectionLabel;
+            String section = resolveSectionLabel(row[0]);
+            if (!section.equals(currentSection)) {
+                currentSection = section;
                 System.out.printf(fmt,
-                        "── " + currentSection + " ──────────────────────────────────────────────────────",
+                        "── " + currentSection + " ─────────────────────────────────────────",
                         "", "");
                 System.out.println(border);
             }
@@ -474,14 +492,6 @@ class DatabasePerformanceReportTest {
         }
 
         System.out.println(border);
-
-        long passed  = results.stream().filter(r -> r[2].startsWith("PASS")).count();
-        long failed  = results.stream().filter(r -> r[2].startsWith("FAIL")).count();
-        long totalMs = results.stream()
-                .mapToLong(r -> Long.parseLong(r[1].replace(" ms", "").trim()))
-                .sum();
-        long avgMs   = results.isEmpty() ? 0 : totalMs / results.size();
-
         System.out.printf(fmt, "Total Operations : " + results.size(), totalMs + " ms",
                 "PASS=" + passed + "  FAIL=" + failed);
         System.out.printf(fmt, "Average per Operation", avgMs + " ms", "");
@@ -489,12 +499,95 @@ class DatabasePerformanceReportTest {
         System.out.println();
     }
 
+    // ── Markdown file ─────────────────────────────────────────────────────────
+
+    private static void writeMarkdownReport(String timestamp,
+                                            long passed, long failed,
+                                            long totalMs, long avgMs) {
+        Path reportPath = Paths.get("docs", "PERFORMANCE_REPORT.md");
+        try {
+            Files.createDirectories(reportPath.getParent());
+        } catch (IOException e) {
+            System.err.println("[PerfReport] Could not create docs/ directory: " + e.getMessage());
+            return;
+        }
+
+        try (PrintWriter md = new PrintWriter(Files.newBufferedWriter(reportPath))) {
+
+            md.println("# MongoDB Database Performance Report");
+            md.println();
+            md.println("| | |");
+            md.println("|---|---|");
+            md.println("| **Database**     | `java-demo` (`mongodb://127.0.0.1:27017`) |");
+            md.println("| **Collections**  | `users`, `posts`, `comments`, `reviews`, `tags`, `post_tags` |");
+            md.println("| **Generated**    | " + timestamp + " |");
+            md.println("| **Total Ops**    | " + results.size() + " |");
+            md.println("| **Total Time**   | " + totalMs + " ms |");
+            md.println("| **Avg per Op**   | " + avgMs + " ms |");
+            md.println("| **Passed / Failed** | ✅ " + passed + "  /  ❌ " + failed + " |");
+            md.println();
+
+            // Group results by section
+            Map<String, List<String[]>> sections = new LinkedHashMap<>();
+            for (String[] row : results) {
+                String section = resolveSectionLabel(row[0]);
+                sections.computeIfAbsent(section, k -> new ArrayList<>()).add(row);
+            }
+
+            for (Map.Entry<String, List<String[]>> entry : sections.entrySet()) {
+                md.println("---");
+                md.println();
+                md.println("## " + entry.getKey());
+                md.println();
+                md.println("| Operation | Duration | Status |");
+                md.println("|-----------|----------|--------|");
+                for (String[] row : entry.getValue()) {
+                    String status = row[2].startsWith("PASS")
+                            ? "✅ PASS"
+                            : "❌ " + row[2];
+                    md.printf("| `%s` | %s | %s |%n", row[0].trim(), row[1], status);
+                }
+                md.println();
+
+                // Section subtotal
+                long sectionMs = entry.getValue().stream()
+                        .mapToLong(r -> Long.parseLong(r[1].replace(" ms", "").trim()))
+                        .sum();
+                long sectionPassed = entry.getValue().stream()
+                        .filter(r -> r[2].startsWith("PASS")).count();
+                md.printf("> **Subtotal:** %d ms over %d operation(s) — %d passed%n%n",
+                        sectionMs, entry.getValue().size(), sectionPassed);
+            }
+
+            md.println("---");
+            md.println();
+            md.println("## Summary");
+            md.println();
+            md.println("| Metric | Value |");
+            md.println("|--------|-------|");
+            md.println("| Total Operations | " + results.size() + " |");
+            md.println("| Total Duration   | **" + totalMs + " ms** |");
+            md.println("| Average Duration | **" + avgMs + " ms** |");
+            md.println("| Passed           | ✅ " + passed + " |");
+            md.println("| Failed           | ❌ " + failed + " |");
+            md.println();
+            md.println("> *Report auto-generated by `DatabasePerformanceReportTest` — do not edit manually.*");
+
+            System.out.println("[PerfReport] Markdown report saved → " + reportPath.toAbsolutePath());
+
+        } catch (IOException e) {
+            System.err.println("[PerfReport] Failed to write markdown report: " + e.getMessage());
+        }
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+
     private static String resolveSectionLabel(String operation) {
-        if (operation.startsWith("[User]"))    return "USER OPERATIONS    (collection: users)";
-        if (operation.startsWith("[Post]"))    return "POST OPERATIONS    (collection: posts)";
-        if (operation.startsWith("[Comment]")) return "COMMENT OPERATIONS (collection: comments)";
-        if (operation.startsWith("[Review]"))  return "REVIEW OPERATIONS  (collection: reviews)";
-        if (operation.startsWith("[Tag]"))     return "TAG OPERATIONS     (collections: tags, post_tags)";
+        if (operation.startsWith("[User]"))    return "USER OPERATIONS — collection: `users`";
+        if (operation.startsWith("[Post]"))    return "POST OPERATIONS — collection: `posts`";
+        if (operation.startsWith("[Comment]")) return "COMMENT OPERATIONS — collection: `comments`";
+        if (operation.startsWith("[Review]"))  return "REVIEW OPERATIONS — collection: `reviews`";
+        if (operation.startsWith("[Tag]"))     return "TAG OPERATIONS — collections: `tags`, `post_tags`";
         return "OTHER";
     }
 }
