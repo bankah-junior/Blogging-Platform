@@ -1,6 +1,5 @@
 package com.amalitech.SpringBootBloggingApp.service.impl;
 
-import com.amalitech.SpringBootBloggingApp.cache.Cache;
 import com.amalitech.SpringBootBloggingApp.model.dto.request.LoginRequest;
 import com.amalitech.SpringBootBloggingApp.model.dto.request.RegisterRequest;
 import com.amalitech.SpringBootBloggingApp.model.dto.request.UpdateUserDetailRequest;
@@ -29,9 +28,6 @@ class UserServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
-
-    @Mock
-    private Cache<String, User> userCache;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -121,7 +117,6 @@ class UserServiceImplTest {
         assertTrue(result);
         verify(userRepository).findById(testUser.getId());
         verify(userRepository).deleteById(testUser.getId());
-        verify(userCache).remove(testUser.getId());
     }
 
     @Test
@@ -137,7 +132,6 @@ class UserServiceImplTest {
     @Test
     @DisplayName("Get user by id with valid id returns user response")
     void getById_ValidId_ReturnsUserResponse() {
-        when(userCache.get(testUser.getId())).thenReturn(null);
         when(userRepository.findById(testUser.getId())).thenReturn(Optional.of(testUser));
 
         UserResponse result = userService.getById(testUser.getId());
@@ -147,48 +141,28 @@ class UserServiceImplTest {
         assertEquals(testUser.getUsername(), result.getUsername());
         assertEquals(testUser.getEmail(), result.getEmail());
         assertNotNull(result.getToken());
-        verify(userCache).get(testUser.getId());
         verify(userRepository).findById(testUser.getId());
-        verify(userCache).put(testUser.getId(), testUser);
     }
 
     @Test
     @DisplayName("Get user by id with non-existent id throws user inputs exception")
     void getById_UserNotFound_ThrowsUserInputsException() {
-        when(userCache.get("nonexistent")).thenReturn(null);
         when(userRepository.findById("nonexistent")).thenReturn(Optional.empty());
 
         assertThrows(UserInputsException.class, () -> userService.getById("nonexistent"));
-        verify(userCache).get("nonexistent");
         verify(userRepository).findById("nonexistent");
-    }
-
-    @Test
-    @DisplayName("Get user by id with user in cache returns user response")
-    void getById_UserInCache_ReturnsUserResponse() {
-        when(userCache.get(testUser.getId())).thenReturn(testUser);
-
-        UserResponse result = userService.getById(testUser.getId());
-
-        assertNotNull(result);
-        assertEquals(testUser.getId(), result.getId());
-        verify(userCache).get(testUser.getId());
-        verify(userRepository, never()).findById(anyString());
     }
 
     @Test
     @DisplayName("Get user by email with valid email returns user response")
     void getByEmail_ValidEmail_ReturnsUserResponse() {
-        when(userCache.get("test@example.com")).thenReturn(null);
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
 
         UserResponse result = userService.getByEmail("test@example.com");
 
         assertNotNull(result);
         assertEquals("test@example.com", result.getEmail());
-        verify(userCache).get("test@example.com");
         verify(userRepository).findByEmail("test@example.com");
-        verify(userCache).put("test@example.com", testUser);
     }
 
     @Test

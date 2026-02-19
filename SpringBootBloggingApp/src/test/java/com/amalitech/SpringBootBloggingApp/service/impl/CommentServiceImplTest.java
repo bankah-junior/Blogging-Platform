@@ -1,6 +1,5 @@
 package com.amalitech.SpringBootBloggingApp.service.impl;
 
-import com.amalitech.SpringBootBloggingApp.cache.Cache;
 import com.amalitech.SpringBootBloggingApp.model.entity.Comment;
 import com.amalitech.SpringBootBloggingApp.model.entity.Post;
 import com.amalitech.SpringBootBloggingApp.model.entity.User;
@@ -25,9 +24,6 @@ class CommentServiceImplTest {
 
     @Mock
     private CommentRepository commentRepository;
-
-    @Mock
-    private Cache<String, User> userCache;
 
     @InjectMocks
     private CommentServiceImpl commentService;

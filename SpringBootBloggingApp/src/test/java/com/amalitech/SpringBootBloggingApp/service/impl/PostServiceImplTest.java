@@ -1,6 +1,5 @@
 package com.amalitech.SpringBootBloggingApp.service.impl;
 
-import com.amalitech.SpringBootBloggingApp.cache.Cache;
 import com.amalitech.SpringBootBloggingApp.model.entity.Post;
 import com.amalitech.SpringBootBloggingApp.model.entity.User;
 import com.amalitech.SpringBootBloggingApp.repository.PostRepository;
@@ -26,8 +25,6 @@ class PostServiceImplTest {
     @Mock
     private PostRepository postRepository;
 
-    @Mock
-    private Cache<String, User> userCache;
 
     @InjectMocks
     private PostServiceImpl postService;

@@ -1,6 +1,5 @@
 package com.amalitech.SpringBootBloggingApp.service.impl;
 
-import com.amalitech.SpringBootBloggingApp.cache.Cache;
 import com.amalitech.SpringBootBloggingApp.model.entity.Tag;
 import com.amalitech.SpringBootBloggingApp.model.entity.User;
 import com.amalitech.SpringBootBloggingApp.repository.TagRepository;
@@ -24,9 +23,6 @@ class TagServiceImplTest {
 
     @Mock
     private TagRepository tagRepository;
-
-    @Mock
-    private Cache<String, User> userCache;
 
     @InjectMocks
     private TagServiceImpl tagService;

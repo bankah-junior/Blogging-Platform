@@ -1,6 +1,5 @@
 package com.amalitech.SpringBootBloggingApp.service.impl;
 
-import com.amalitech.SpringBootBloggingApp.cache.Cache;
 import com.amalitech.SpringBootBloggingApp.model.entity.Post;
 import com.amalitech.SpringBootBloggingApp.model.entity.Review;
 import com.amalitech.SpringBootBloggingApp.model.entity.User;
@@ -24,9 +23,6 @@ class ReviewServiceImplTest {
 
     @Mock
     private ReviewRepository reviewRepository;
-
-    @Mock
-    private Cache<String, User> userCache;
 
     @InjectMocks
     private ReviewServiceImpl reviewService;
