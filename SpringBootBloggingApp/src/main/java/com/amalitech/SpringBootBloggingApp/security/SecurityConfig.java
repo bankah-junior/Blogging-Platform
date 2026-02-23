@@ -57,11 +57,7 @@ public class SecurityConfig {
                         // OAuth2 endpoints
                         .requestMatchers("/oauth2/**", "/login/oauth2/**", "/login**", "/error**").permitAll()
                         // Public read endpoints
-                        .requestMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/tags/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/comments/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/reviews/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/users/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/posts/**", "/api/v1/tags/**", "/api/v1/comments/**", "/api/v1/reviews/**", "/api/v1/users/**").permitAll()
                         // Security audit endpoints (Admin only - secured by @PreAuthorize)
                         .requestMatchers("/api/security/**").authenticated()
                         // Protected endpoints - will be secured with @PreAuthorize in controllers
@@ -93,7 +89,17 @@ public class SecurityConfig {
                 "http://localhost:8080"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList(
+                "Origin",
+                "Content-Type",
+                "Accept",
+                "Authorization",
+                "X-Requested-With",
+                "X-Search-Keyword",
+                "X-Sort-By",
+                "X-Sort-Ascending",
+                "X-Request-Time"
+        ));
         configuration.setExposedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);

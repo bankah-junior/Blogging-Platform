@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,47 +31,23 @@ public class AuthController {
     @PostMapping("/register")
     @Operation(summary = "Register a new user", description = "Creates a new user account with READER role by default")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
-        try {
-            AuthResponse response = authService.register(request);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(createErrorResponse(e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(createErrorResponse("Registration failed: " + e.getMessage()));
-        }
+        AuthResponse response = authService.register(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/login")
     @Operation(summary = "User login", description = "Authenticates user and returns JWT access and refresh tokens")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
-        try {
-            request.setIpAddress(getClientIpAddress(httpRequest));
-            AuthResponse response = authService.login(request);
-            return ResponseEntity.ok(response);
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(createErrorResponse("Invalid username or password"));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(createErrorResponse("Login failed: " + e.getMessage()));
-        }
+        request.setIpAddress(getClientIpAddress(httpRequest));
+        AuthResponse response = authService.login(request);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/refresh")
     @Operation(summary = "Refresh access token", description = "Generates new access and refresh tokens using a valid refresh token")
     public ResponseEntity<?> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
-        try {
-            AuthResponse response = authService.refreshToken(request);
-            return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(createErrorResponse(e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(createErrorResponse("Token refresh failed: " + e.getMessage()));
-        }
+        AuthResponse response = authService.refreshToken(request);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/validate")
@@ -87,20 +62,15 @@ public class AuthController {
     @PostMapping("/logout")
     @Operation(summary = "User logout", description = "Blacklists the current token and invalidates the session")
     public ResponseEntity<?> logout(HttpServletRequest request) {
-        try {
-            String token = extractJwtFromRequest(request);
-            if (token != null) {
-                authService.logout(token);
-                Map<String, String> response = new HashMap<>();
-                response.put("message", "Logged out successfully");
-                return ResponseEntity.ok(response);
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(createErrorResponse("No token provided"));
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(createErrorResponse("Logout failed: " + e.getMessage()));
+        String token = extractJwtFromRequest(request);
+        if (token != null) {
+            authService.logout(token);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Logged out successfully");
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(createErrorResponse("No token provided"));
         }
     }
 

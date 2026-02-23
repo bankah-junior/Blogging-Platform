@@ -3,26 +3,25 @@ spring:
     active: dev
   graphql:
     graphiql:
-          enabled: true
+      enabled: true
   security:
     oauth2:
-          client:
-            registration:
-              google:
-                client-id: ${GOOGLE_CLIENT_ID}
-                client-secret: ${GOOGLE_CLIENT_SECRET}
-                scope:
-                  - email
-                  - profile
-#                redirect-uri: ${OAUTH2_REDIRECT_URI:http://localhost:8080/login/oauth2/code/google}
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
 
 app:
   cache:
     ttl-ms: 600000 # default TTL for cache entries (10 minutes)
   jwt:
-    secret: ${JWT_SECRET:your-256-bit-secret-key-change-this-in-production-make-it-very-long-and-secure}
-    expiration-ms: ${JWT_EXPIRATION_MS:900000} # 15 minutes
-    refresh-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS:86400000} # 24 hours
+    secret: ${JWT_SECRET}
+    expiration-ms: ${JWT_EXPIRATION_MS}
+    refresh-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS}
   oauth2:
     success-redirect-url: ${OAUTH2_SUCCESS_REDIRECT_URL}
 

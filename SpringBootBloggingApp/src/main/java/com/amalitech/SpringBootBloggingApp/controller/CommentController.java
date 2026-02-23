@@ -32,7 +32,7 @@ public class CommentController {
 
     /**
      * create a comment
-     * @param comment the comment to create
+     * @param request the comment to create
      * @return the created comment if valid, otherwise a bad request response with an error message
      */
     @PostMapping("/create")
