@@ -22,6 +22,8 @@ app:
     queue-capacity: ${ASYNC_QUEUE_CAPACITY}
   analytics:
     cleanup-rate-ms: ${ANALYTICS_CLEANUP_RATE_MS}
+  post:
+    parallel-threshold: ${POST_PARALLEL_THRESHOLD}
   cache:
     ttl-ms: 600000 # default TTL for cache entries (10 minutes)
   jwt:

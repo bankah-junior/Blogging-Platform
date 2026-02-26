@@ -10,6 +10,7 @@ import com.amalitech.SpringBootBloggingApp.service.PostService;
 import com.amalitech.SpringBootBloggingApp.service.NotificationService;
 import com.amalitech.SpringBootBloggingApp.util.ValidationUtil;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
@@ -17,10 +18,22 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 public class PostServiceImpl implements PostService {
+
+    /**
+     * List size above which sort operations switch to parallelStream().
+     * Sequential streams have lower overhead for small lists; parallel streams
+     * outperform at high cardinality due to multi-core fork/join execution.
+     * Configurable via {@code app.post.parallel-threshold} (default: 1000).
+     */
+    @Value("${app.post.parallel-threshold:1000}")
+    private int parallelThreshold;
+
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final NotificationService notificationService;
@@ -164,27 +177,19 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public List<Post> sortByDate(List<Post> posts, boolean ascending) {
-        return posts.stream().sorted((p1, p2) -> {
-                    if (ascending) {
-                        return p1.getCreatedAt().compareTo(p2.getCreatedAt());
-                    } else {
-                        return p2.getCreatedAt().compareTo(p1.getCreatedAt());
-                    }
-                })
-                .toList();
+        Comparator<Post> cmp = Comparator.comparingLong(
+                p -> p.getCreatedAt() != null ? p.getCreatedAt() : 0L);
+        if (!ascending) cmp = cmp.reversed();
+        return streamOf(posts).sorted(cmp).toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Post> sortByTitle(List<Post> posts, boolean ascending) {
-        return posts.stream().sorted((p1, p2) -> {
-                    if (ascending) {
-                        return p1.getTitle().compareToIgnoreCase(p2.getTitle());
-                    } else {
-                        return p2.getTitle().compareToIgnoreCase(p1.getTitle());
-                    }
-                })
-                .toList();
+        Comparator<Post> cmp = Comparator.comparing(
+                Post::getTitle, String.CASE_INSENSITIVE_ORDER);
+        if (!ascending) cmp = cmp.reversed();
+        return streamOf(posts).sorted(cmp).toList();
     }
 
     @Override
@@ -225,5 +230,23 @@ public class PostServiceImpl implements PostService {
         var pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
         var pageResult = postRepository.findAll(pageable);
         return new PageResponse<>(pageResult.getContent(), page, size, pageResult.getTotalElements());
+    }
+
+    // ------------------------------------------------------------------ //
+    //  Helpers                                                             //
+    // ------------------------------------------------------------------ //
+
+    /**
+     * Returns a parallel stream when the list exceeds {@code parallelThreshold},
+     * otherwise a sequential stream.
+     *
+     * <p>Rationale: parallel streams introduce fork/join overhead that exceeds
+     * the benefit for small collections. Above the threshold, multi-core
+     * execution significantly reduces sort latency for large blog feeds.
+     */
+    private Stream<Post> streamOf(List<Post> posts) {
+        return posts.size() > parallelThreshold
+                ? posts.parallelStream()
+                : posts.stream();
     }
 }
