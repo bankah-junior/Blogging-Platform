@@ -16,6 +16,10 @@ spring:
               - profile
 
 app:
+  async:
+    core-pool-size: ${ASYNC_CORE_POOL_SIZE}
+    max-pool-size: ${ASYNC_MAX_POOL_SIZE}
+    queue-capacity: ${ASYNC_QUEUE_CAPACITY}
   cache:
     ttl-ms: 600000 # default TTL for cache entries (10 minutes)
   jwt:

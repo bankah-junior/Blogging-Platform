@@ -55,7 +55,7 @@ public class QueryResolver {
     }
 
     @QueryMapping
-    public Post postById(@Argument String id) {
+    public Post postById(@Argument("id") String id) {
         return postService.getById(id);
     }
 }
