@@ -809,6 +809,137 @@
           }
         }
       ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Record Post View",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/analytics/posts/:postId/view",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "analytics", "posts", ":postId", "view"],
+              "variable": [{ "key": "postId", "value": "1" }]
+            },
+            "description": "Record a view for a specific post (fire-and-forget, no auth required)."
+          }
+        },
+        {
+          "name": "Get Post View Count",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/analytics/posts/:postId/views",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "analytics", "posts", ":postId", "views"],
+              "variable": [{ "key": "postId", "value": "1" }]
+            },
+            "description": "Retrieve the total view count for a specific post."
+          }
+        },
+        {
+          "name": "Get Trending Posts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/analytics/trending?limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "analytics", "trending"],
+              "query": [{ "key": "limit", "value": "10", "description": "Number of top trending posts to return (default: 10)" }]
+            },
+            "description": "Get the top-N trending posts ranked by view count."
+          }
+        },
+        {
+          "name": "Get Personalized Feed",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/analytics/feed",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "analytics", "feed"]
+            },
+            "description": "Get a personalized post feed for the authenticated user."
+          }
+        },
+        {
+          "name": "Get View Count Snapshot",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/analytics/views/snapshot",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "analytics", "views", "snapshot"]
+            },
+            "description": "Get the current in-memory snapshot of view counts for all posts."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Metrics",
+      "item": [
+        {
+          "name": "Get All Metrics",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/metrics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "metrics"]
+            },
+            "description": "Get metrics snapshot for all tracked service methods. Requires ROLE_ADMIN."
+          }
+        },
+        {
+          "name": "Get Metrics by Method",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/metrics/:methodName",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "metrics", ":methodName"],
+              "variable": [{ "key": "methodName", "value": "createPost" }]
+            },
+            "description": "Get metrics for a specific tracked service method. Requires ROLE_ADMIN."
+          }
+        },
+        {
+          "name": "Get Metrics Summary",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/metrics/summary",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "metrics", "summary"]
+            },
+            "description": "Get a high-level summary of all tracked metrics (e.g., method count). Requires ROLE_ADMIN."
+          }
+        },
+        {
+          "name": "Reset All Metrics",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/metrics/reset",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "metrics", "reset"]
+            },
+            "description": "Reset all collected metrics data. Requires ROLE_ADMIN."
+          }
+        }
+      ]
     }
   ]
 }
