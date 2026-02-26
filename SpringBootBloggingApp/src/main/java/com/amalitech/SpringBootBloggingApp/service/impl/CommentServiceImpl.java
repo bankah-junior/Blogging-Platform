@@ -9,6 +9,7 @@ import com.amalitech.SpringBootBloggingApp.repository.CommentRepository;
 import com.amalitech.SpringBootBloggingApp.repository.PostRepository;
 import com.amalitech.SpringBootBloggingApp.repository.UserRepository;
 import com.amalitech.SpringBootBloggingApp.service.CommentService;
+import com.amalitech.SpringBootBloggingApp.service.NotificationService;
 import com.amalitech.SpringBootBloggingApp.util.ValidationUtil;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
 import org.springframework.cache.annotation.CacheEvict;
@@ -26,11 +27,16 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final NotificationService notificationService;
 
-    public CommentServiceImpl(CommentRepository commentRepository, UserRepository userRepository, PostRepository postRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository,
+                               UserRepository userRepository,
+                               PostRepository postRepository,
+                               NotificationService notificationService) {
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.postRepository = postRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -45,7 +51,14 @@ public class CommentServiceImpl implements CommentService {
         long now = System.currentTimeMillis();
         comment.setCreatedAt(now);
         comment.setUpdatedAt(now);
-        return commentRepository.save(comment);
+        Comment saved = commentRepository.save(comment);
+
+        // Fire-and-forget: notify post author on the async thread pool
+        String authorEmail = post.getAuthor() != null ? post.getAuthor().getEmail() : "unknown";
+        notificationService.notifyNewComment(
+                post.getId(), post.getTitle(), user.getUsername(), authorEmail);
+
+        return saved;
     }
 
     @Override

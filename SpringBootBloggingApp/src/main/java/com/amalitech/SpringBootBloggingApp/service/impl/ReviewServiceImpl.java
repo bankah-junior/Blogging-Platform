@@ -9,6 +9,7 @@ import com.amalitech.SpringBootBloggingApp.repository.PostRepository;
 import com.amalitech.SpringBootBloggingApp.repository.ReviewRepository;
 import com.amalitech.SpringBootBloggingApp.repository.UserRepository;
 import com.amalitech.SpringBootBloggingApp.service.ReviewService;
+import com.amalitech.SpringBootBloggingApp.service.NotificationService;
 import com.amalitech.SpringBootBloggingApp.util.ValidationUtil;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
 import org.springframework.cache.annotation.CacheEvict;
@@ -25,11 +26,16 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final NotificationService notificationService;
 
-    public ReviewServiceImpl(ReviewRepository reviewRepository, UserRepository userRepository, PostRepository postRepository) {
+    public ReviewServiceImpl(ReviewRepository reviewRepository,
+                              UserRepository userRepository,
+                              PostRepository postRepository,
+                              NotificationService notificationService) {
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.postRepository = postRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -45,7 +51,13 @@ public class ReviewServiceImpl implements ReviewService {
         long now = System.currentTimeMillis();
         review.setCreatedAt(now);
         review.setUpdatedAt(now);
-        return reviewRepository.save(review);
+        Review saved = reviewRepository.save(review);
+
+        // Fire-and-forget: notify post author about the new review
+        notificationService.notifyNewReview(
+                post.getId(), post.getTitle(), user.getUsername(), request.getRating());
+
+        return saved;
     }
 
     @Override

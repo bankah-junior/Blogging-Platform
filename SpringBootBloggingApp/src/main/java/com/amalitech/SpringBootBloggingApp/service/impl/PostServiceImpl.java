@@ -7,6 +7,7 @@ import com.amalitech.SpringBootBloggingApp.model.entity.User;
 import com.amalitech.SpringBootBloggingApp.repository.PostRepository;
 import com.amalitech.SpringBootBloggingApp.repository.UserRepository;
 import com.amalitech.SpringBootBloggingApp.service.PostService;
+import com.amalitech.SpringBootBloggingApp.service.NotificationService;
 import com.amalitech.SpringBootBloggingApp.util.ValidationUtil;
 import com.amalitech.SpringBootBloggingApp.util.exceptions.UserInputsException;
 import org.springframework.cache.annotation.CacheEvict;
@@ -22,10 +23,14 @@ import java.util.List;
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
-    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository) {
+    public PostServiceImpl(PostRepository postRepository,
+                            UserRepository userRepository,
+                            NotificationService notificationService) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -41,7 +46,15 @@ public class PostServiceImpl implements PostService {
         long now = System.currentTimeMillis();
         post.setCreatedAt(now);
         post.setUpdatedAt(now);
-        return postRepository.save(post);
+        Post saved = postRepository.save(post);
+
+        // Fire-and-forget: notify subscribers if post is published immediately
+        if (saved.isPublished()) {
+            notificationService.notifyPostPublished(
+                    saved.getId(), saved.getTitle(), author.getUsername());
+        }
+
+        return saved;
     }
 
     @Override
@@ -62,6 +75,11 @@ public class PostServiceImpl implements PostService {
     @CacheEvict(value = "posts", allEntries = true)
     public Post update(Post post) {
         Post saved = postRepository.save(post);
+        // Fire-and-forget: notify if post was just published
+        if (saved.isPublished() && saved.getAuthor() != null) {
+            notificationService.notifyPostPublished(
+                    saved.getId(), saved.getTitle(), saved.getAuthor().getUsername());
+        }
         return saved;
     }
 
