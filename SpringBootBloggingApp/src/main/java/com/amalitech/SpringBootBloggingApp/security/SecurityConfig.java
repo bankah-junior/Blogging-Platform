@@ -58,6 +58,9 @@ public class SecurityConfig {
                         .requestMatchers("/oauth2/**", "/login/oauth2/**", "/login**", "/error**").permitAll()
                         // Public read endpoints
                         .requestMatchers(HttpMethod.GET, "/api/v1/posts/**", "/api/v1/tags/**", "/api/v1/comments/**", "/api/v1/reviews/**", "/api/v1/users/**").permitAll()
+                        // Analytics – trending is public; view recording and feed require auth
+                        .requestMatchers(HttpMethod.GET, "/api/v1/analytics/trending").permitAll()
+                        .requestMatchers("/api/v1/analytics/**").authenticated()
                         // Security audit endpoints (Admin only - secured by @PreAuthorize)
                         .requestMatchers("/api/security/**").authenticated()
                         // Protected endpoints - will be secured with @PreAuthorize in controllers
